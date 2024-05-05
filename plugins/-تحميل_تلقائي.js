@@ -54,7 +54,7 @@ let doc = {
                 quoted: m
             })
             } catch (e) {
-                await m.reply('error')
+                await m.reply( error )
             }
 
 }
