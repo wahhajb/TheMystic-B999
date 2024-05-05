@@ -11,14 +11,14 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
 
     const response = await fetch(`https://aemt.me/gemini?text=${encodeURIComponent(text)}`);
     if (!response.ok) {
-      return conn.reply(m.chat,  أسف هل تقدر على صياغة السؤال مجددا , m);
+      return conn.reply(m.chat,  أسفة هل تقدر على صياغة السؤال مجددا , m);
     }
 
     const data = await response.json();
     const result = data.result;
 
     if (!result) {
-      return conn.reply(m.chat,  أسف حدث خطأ في تنفيد طلبك حاول لاحقا . , m);
+      return conn.reply(m.chat,  أسفة حدث خطأ في تنفيد طلبك حاول لاحقا . , m);
     }
 
     conn.reply(m.chat, result, m);
