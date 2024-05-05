@@ -6,7 +6,7 @@ import fs from 'fs';
 const handler = async (m, {conn, text, usedPrefix, command}) => {
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.plugins.downloader_playlist
 
 
@@ -47,5 +47,5 @@ ${tradutor.texto2[1]}
 };
 handler.help = ['playlist *<texto>*'];
 handler.tags = ['search'];
-handler.command = /^playlist|playlist2$/i;
+handler.command = /^playlist|يوتيوب$/i;
 export default handler;
