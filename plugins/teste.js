@@ -8,7 +8,7 @@ console.log(conn)
 
 
 };
-handler.command = /^(teste)$/i;
+handler.command = /^(test)$/i;
 export default handler;
 
 
