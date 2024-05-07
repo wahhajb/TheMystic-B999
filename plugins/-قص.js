@@ -1,4 +1,6 @@
 
+
+
 import fetch from 'node-fetch'
 let handler = async(m, { conn, args, text }) => {
 if (!text) throw '* فين الرابط ؟*\n*ضيف رابط يحب*'
@@ -13,7 +15,3 @@ handler.limit = 1
 handler.register = true
 handler.fail = null
 export default handler
-
-
-
-
