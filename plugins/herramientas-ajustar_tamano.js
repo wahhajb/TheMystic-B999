@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 const handler = async (m, {conn, usedPrefix, command, args, text}) => {
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.plugins.herramientas_ajustar_tamano
   
   const q = m.quoted ? m.quoted : m;
@@ -24,5 +24,5 @@ const handler = async (m, {conn, usedPrefix, command, args, text}) => {
 };
 handler.tags = ['tools'];
 handler.help = ['tamaño <cantidad>'];
-handler.command = /^(length|filelength|edittamaño|totamaño|tamaño)$/i;
+handler.command = /^(الحجم|filelength|edittamaño|totamaño|tamaño)$/i;
 export default handler;
