@@ -5,7 +5,7 @@ import Jimp from "jimp";
 const handler = async (m, {conn, usedPrefix, command}) => {
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.plugins.herramientas_hd
 
  try {    
@@ -23,7 +23,7 @@ const handler = async (m, {conn, usedPrefix, command}) => {
 };
 handler.help = ["remini", "hd", "enhance"];
 handler.tags = ["ai", "tools"];
-handler.command = ["remini", "hd", "enhance"];
+handler.command = ["جودةعاليه", "hd", "جودةعالية"];
 export default handler;
 
 async function remini(imageData, operation) {
