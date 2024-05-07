@@ -7,7 +7,7 @@ let handler = async (m, { conn, command, args, usedPrefix }) => {
 
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.plugins.buscador_google
 
   const fetch = (await import('node-fetch')).default;
@@ -26,7 +26,7 @@ conn.sendFile(m.chat, ss, 'error.png', teks, m)
 } 
 handler.help = ['google', 'googlef'].map((v) => v + ' <pencarian>');
 handler.tags = ['internet'];
-handler.command = /^googlef?$/i;
+handler.command = /^جوجل$/i;
 export default handler;
 
 /*import {googleIt} from '@bochilteam/scraper';
