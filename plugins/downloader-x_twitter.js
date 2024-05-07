@@ -4,7 +4,7 @@ let enviando = false;
 const handler = async (m, {conn, text, usedPrefix, command}) => {
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.plugins.downloader_x_twitter
 
 
@@ -35,7 +35,7 @@ try {
     return;
   }
 };    
-handler.command = /^((x|xdl|dlx|twdl|tw|twt|twitter)(dl)?)$/i;
+handler.command = /^((x|xdl|تويتر|twdl|tw|twt|twitter)(dl)?)$/i;
 export default handler;
 
 const _twitterapi = (id) => `https://info.tweeload.site/status/${id}.json`;
