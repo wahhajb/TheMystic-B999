@@ -14,7 +14,7 @@ export async function before(m, {match}) {
       }
     }
   } else {
-    if (!/^(next|leave|start)/.test(m.text)) {
+    if (!/^(next|leave|سريه|start)/.test(m.text)) {
       return;
     }
     conn.sendMessage(m.chat, {text: `*[❗] No estás en un chat, por favor espera a estar en uno.*`}, {quoted: m});
