@@ -1,13 +1,11 @@
-import fetch from "node-fetch"
+import fetch from "node-fetch";
 
 let previousMessages = [];
-let handler = async (m, { conn, command, text, usedPrefix }) => {
-if (!text) throw ` مرحبا كيف يمكنني مساعدتك  اليوم`;
 
-//const handler = async (m, { text, usedPrefix, command, conn }) => {
+let handler = async (m, { conn, command, text, usedPrefix }) => {
   try {
     if (!text) {
-      throw "Masukkan pertanyaan!\n\n*Contoh:* Siapa presiden Indonesia?";
+      throw "مرحبا كيف يمكنني مساعدتك اليوم؟";
     }
 
     let name = conn.getName(m.sender);
@@ -46,6 +44,7 @@ if (!text) throw ` مرحبا كيف يمكنني مساعدتك  اليوم`;
     });
 
     previousMessages = [...previousMessages, { role: "user", content: text }];
+    previousMessages = [...previousMessages, { role: "bot", content: result.result }];
   } catch (error) {
     await conn.sendMessage(m.chat, {
       text: `Error: ${error.message}`,
