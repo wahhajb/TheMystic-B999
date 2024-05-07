@@ -22,7 +22,7 @@ let device;
 const handler = async (m, { command, usedPrefix, conn, text }) => {
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
   const tradutor = _translate.plugins.descargas_play_v2
   device = await getDevice(m.key.id);
   
