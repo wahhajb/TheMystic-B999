@@ -14,6 +14,6 @@ const handler = async (m, {conn, args, text}) => {
 };
 handler.help = ['tinyurl', 'acortar'].map((v) => v + ' <link>');
 handler.tags = ['tools'];
-handler.command = /^(tinyurl|short|تقصير)$/i;
+handler.command = /^(tinyurl|short|قص2)$/i;
 handler.fail = null;
 export default handler;
