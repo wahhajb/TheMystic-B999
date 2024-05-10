@@ -1,4 +1,4 @@
-import { generateWAMessageFromContent } from '@whiskeysockets/baileys';
+ import { generateWAMessageFromContent } from '@whiskeysockets/baileys';
 import { smsg } from './lib/simple.js';
 import { format } from 'util';
 import { fileURLToPath } from 'url';
@@ -900,7 +900,7 @@ export async function handler(chatUpdate) {
           wolflastfeed: 0,
           wood: 0,
           wortel: 0,
-          language: 'es',
+          language: 'ar',
           gameglx: {},
         };
       }
@@ -938,6 +938,8 @@ export async function handler(chatUpdate) {
       if (gameglx) {
 
         if (!('status' in gameglx)) gameglx.status = false;
+        if (!('notificacao' in gameglx)) gameglx.notificacao = {};
+        if (!('recebidas' in gameglx.notificacao)) gameglx.notificacao.recebidas = [];
         // Perfil
         if (!('perfil' in gameglx)) gameglx.perfil = {};
         if (!('nome' in gameglx.perfil)) gameglx.perfil.nome = null;
@@ -1012,6 +1014,10 @@ export async function handler(chatUpdate) {
         if (!('atacante' in gameglx.perfil.ataque.sendoAtacado)) gameglx.perfil.ataque.sendoAtacado.atacante = null;
         if (!('forcaAtaque' in gameglx.perfil.ataque)) gameglx.perfil.ataque.forcaAtaque = {};
         if (!('ataque' in gameglx.perfil.ataque.forcaAtaque)) gameglx.perfil.ataque.forcaAtaque.ataque = 10;
+        if (!('data' in gameglx.perfil.ataque)) gameglx.perfil.ataque.data = {};
+        if (!('dia' in gameglx.perfil.ataque.data)) gameglx.perfil.ataque.data.dia = 0;
+        if (!('hora' in gameglx.perfil.ataque.data)) gameglx.perfil.ataque.data.hora = 0;
+        if (!('contagem' in gameglx.perfil.ataque.data)) gameglx.perfil.ataque.data.contagem = 0;
         // Defesa
         if(!('defesa' in gameglx.perfil)) gameglx.perfil.defesa = {};
         if(!('forca' in gameglx.perfil.defesa)) gameglx.perfil.defesa.forca = 100;
@@ -1021,6 +1027,9 @@ export async function handler(chatUpdate) {
       } else {
         global.db.data.users[m.sender].gameglx = {
           status: false,
+          notificacao: {
+            recebidas:[]
+          },
           perfil: {
             xp: 112,
             nivel: {
@@ -1089,6 +1098,10 @@ export async function handler(chatUpdate) {
               }
             },
             ataque: {
+              data: {
+                hora: 0,
+                contagem: 0 
+              },
               sendoAtacado: {
                 status: false,
                 atacante: null,
@@ -1098,8 +1111,8 @@ export async function handler(chatUpdate) {
               }
             },
             defesa : {
-              forca: 100,
-              ataque: 40
+              forca: 200,
+              ataque: 30
             }
           }
         };
@@ -1111,7 +1124,7 @@ export async function handler(chatUpdate) {
         global.db.data.chats[m.chat] = {};
       }
       if (chat) {
-        if (!('language' in chat)) chat.language = 'es';
+        if (!('language' in chat)) chat.language = 'ar';
         if (!('isBanned' in chat)) chat.isBanned = false;
         if (!('welcome' in chat)) chat.welcome = true;
         if (!('detect' in chat)) chat.detect = true;
@@ -1162,7 +1175,7 @@ export async function handler(chatUpdate) {
           simi: false,
           game: true,
           expired: 0,
-          language: 'es',
+          language: 'ar',
         };
       }
       const settings = global.db.data.settings[this.user.jid];
@@ -1196,8 +1209,8 @@ export async function handler(chatUpdate) {
       console.error(e);
     }
 
-    const idioma = global.db.data.users[m.sender]?.language || 'es';
-    const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+    const idioma = global.db.data.users[m.sender]?.language || 'ar';
+    const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
     const tradutor = _translate.handler.handler
 
     if (opts['nyimak']) {
@@ -1600,8 +1613,8 @@ export async function participantsUpdate({ id, participants, action }) {
    * Opção de tradução de idioma
    * 
    ***********************/
-  const idioma = global.db.data.chats[id]?.language || 'es';
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const idioma = global.db.data.chats[id]?.language || 'ar';
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.handler.participantsUpdate
 
   const m = mconn
@@ -1665,8 +1678,8 @@ export async function participantsUpdate({ id, participants, action }) {
  */
 export async function groupsUpdate(groupsUpdate) {
   //console.log(groupsUpdate)
-  const idioma = global.db.data.chats[groupsUpdate[0].id]?.language || 'es';
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const idioma = global.db.data.chats[groupsUpdate[0].id]?.language || 'ar';
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.handler.participantsUpdate
 
   if (opts['self']) {
@@ -1708,8 +1721,8 @@ export async function callUpdate(callUpdate) {
 export async function deleteUpdate(message) {
   const datas = global
   const id = message.participant // Obtenga la identificación del usuario, solo dentro de esta función "deleteUpdate"
-  const idioma = datas.db.data.users[id]?.language || 'es';
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const idioma = datas.db.data.users[id]?.language || 'ar';
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.handler.deleteUpdate
 
 
@@ -1739,8 +1752,8 @@ ${tradutor.texto1[5]}`.trim();
 
 global.dfail = (type, m, conn) => {
   const datas = global
-  const idioma = datas.db.data.users[m.sender].language || 'es';
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const idioma = datas.db.data.users[m.sender].language || 'ar';
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.handler.dfail
 
   const msg = {
