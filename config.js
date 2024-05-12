@@ -41,7 +41,7 @@ global.mods = [];
 
 //* *******Tiempo***************
 global.d = new Date(new Date + 3600000);
-global.locale = 'es';
+global.locale = 'ar';
 global.dia = d.toLocaleDateString(locale, {weekday: 'long'});
 global.fecha = d.toLocaleDateString('ar', {day: 'numeric', month: 'numeric', year: 'numeric'});
 global.mes = d.toLocaleDateString('ar', {month: 'long'});
@@ -54,7 +54,7 @@ global.mysticbot = ' ﮼♪ﺑوﺕ|الصاعـ|ـقة⁞¹²';
 global.md = 'https://instagram.com/gl_al.12';
 global.mysticbot = 'https://instagram.com/gl_al.12';
 global.waitt =  '> سوف أجيب عن سؤالك بعد قليل ...';
-global.waittt =  > _جاري معالجة طلبك حاول الإنتظار ..._* ;
+global.waittt =  '> _جاري معالجة طلبك حاول الإنتظار ..._*' ;
 global.waitttt =  '> سوف يتم رسم صورتك بعد قليل ...';
 global.nomorown = '967733875056';
 global.pdoc = ['application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/msword', 'application/pdf', 'text/rtf'];
