@@ -56,7 +56,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
   } catch (error) {
     // إرسال رسالة الخطأ إذا حدث خطأ ما
     await conn.sendMessage(m.chat, {
-      text: `خطأ: ${error.message}`,
+      text: `مرحبا كيف يمكنني مساعدتك اليوم؟: ${error.message}`,
     });
   }
 }
