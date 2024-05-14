@@ -1,16 +1,15 @@
-let handler = async (m, { conn }) => {
+ let handler = async (m, { conn }) => {
     let teks = `${pickRandom([
         'مرحبا كيف يمكنني مساعدتك اليوم',
       
     ])}`;
 
-    // تقسيم النص إلى كلمات والتحقق من وجود الكلمة "بوت" ككلمة منفردة
-    let words = m.text.split(" ");
-    if (words.includes("بوت.")) {
+    // التحقق من أن النص يحتوي على ".بوت" ككلمة منفردة مع النقطة في البداية
+    if (/\b\.بوت\b/i.test(m.text)) {
         conn.reply(m.chat, teks, m, { mentions: { mentionedJid: [m.sender] }});
     }
 }
-handler.customPrefix = /(بوت.)$/i;
+handler.customPrefix = /\.بوت/i; // تحديد النقطة في البداية كبادئة مخصصة
 handler.command = new RegExp;
 
 export default handler;
