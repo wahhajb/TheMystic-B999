@@ -1,23 +1,23 @@
- import { prepareWAMessageMedia, generateWAMessageFromContent, getDevice } from '@whiskeysockets/baileys'
+import { prepareWAMessageMedia, generateWAMessageFromContent, getDevice } from '@whiskeysockets/baileys';
 import yts from 'yt-search';
 import fs from 'fs';
 
-async function loading(conn, m, response) {
+// دالة التحميل
+async function loading(conn, m) {
     var hawemod = [
         "《 █▒▒▒▒▒▒▒▒▒▒▒》10%",
         "《 ████▒▒▒▒▒▒▒▒》30%",
         "《 ███████▒▒▒▒▒》50%",
         "《 ██████████▒▒》80%",
         "《 ████████████》100%"
-    ]
-    let { key } = await conn.sendMessage(m.chat, { text: "جاري البحث...", mentions: conn.parseMention(response) }, { quoted: m })
+    ];
     for (let i = 0; i < hawemod.length; i++) {
+        await conn.sendMessage(m.chat, hawemod[i], MessageType.text);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        await conn.sendMessage(m.chat, { text: hawemod[i], edit: key, mentions: conn.parseMention(response) }, { quoted: m });
     }
-    await conn.sendMessage(m.chat, { text: response, edit: key, mentions: conn.parseMention(response) }, { quoted: m });
 }
 
+// المعالج الرئيسي
 const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
     const datas = global;
     const idioma = datas.db.data.users[m.sender].language;
@@ -27,18 +27,22 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
     
     if (!text) throw `⚠️ *${traductor.texto1}*`;
     
+    // التحقق من نوع الجهاز
     if (device !== 'desktop' || device !== 'web') {      
-        const results = await yts(text);
+        await loading(conn, m); // استدعاء دالة التحميل
+        
+        const results = await yts(text); // البحث عن الفيديوهات على يوتيوب
         const videos = results.videos.slice(0, 20);
         const randomIndex = Math.floor(Math.random() * videos.length);
         const randomVideo = videos[randomIndex];
 
+        // إعداد رسالة التفاعل
         var messa = await prepareWAMessageMedia({ image: {url: randomVideo.thumbnail}}, { upload: conn.waUploadToServer })
         const interactiveMessage = {
-            body: { text: `*النتائج التي تم الحصول عليها:* ${results.videos.length}\n*—◉ Video aleatorio:*\n*-› العنوان:* ${randomVideo.title}\n*-› القناة:* ${randomVideo.author.name}\n*-› المشاهدات:* ${randomVideo.views}\n*-› ${traductor.texto2[0]}:* ${randomVideo.url}\n*-› الصورة:* ${randomVideo.thumbnail}`.trim() },
+            body: { text: `*${traductor.texto3[0]}:* ${results.videos.length}\n*—◉ ${traductor.texto3[1]}:*\n*-› ${traductor.texto3[2]}:* ${randomVideo.title}\n*-› ${traductor.texto3[3]}:* ${randomVideo.author.name}\n*-› ${traductor.texto3[4]}:* ${randomVideo.views}\n*-› ${traductor.texto3[5]}:* ${randomVideo.url}\n*-› ${traductor.texto3[6]}:* ${randomVideo.thumbnail}`.trim() },
             footer: { text: `${global.wm}`.trim() },  
             header: {
-                title: `*< نتائج البحث في اليوتيوب />*\n`,
+                title: `*< ${traductor.texto3[7]} />*\n`,
                 hasMediaAttachment: true,
                 imageMessage: messa.imageMessage,
             },
@@ -47,53 +51,44 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
                     {
                         name: 'single_select',
                         buttonParamsJson: JSON.stringify({
-                            title: 'اضغط هنا للتحميل',
+                            title: `${traductor.texto3[8]}`,
                             sections: videos.map((video) => ({
                                 title: video.title,
                                 rows: [
                                     {
                                         header: video.title,
                                         title: video.author.name,
-                                        description: 'للتحميل مقطع موسيقى MP3',
-                                        id: `${prefijo}شغل ${video.url}`
+                                        description: `${traductor.texto3[9]}`,
+                                        id: `${prefijo}audio ${video.url}`
                                     },
                                     {
                                         header: video.title,
                                         title: video.author.name,
-                                        description: 'للتحميل مقطع فيديو MP4',
-                                        id: `${prefijo}فيد ${video.url}`
+                                        description: `${traductor.texto3[10]}`,
+                                        id: `${prefijo}video ${video.url}`
                                     }
                                 ]
                             }))
                         })
                     }
                 ],
-                messageParamsJson: ''
+                messageParamsJson: {}
             }
         };        
-        const response = `${traductor.texto1}`;
-        await loading(conn, m, response);
+
+        // إرسال رسالة التفاعل
+        let msg = generateWAMessageFromContent(m.chat, {
+            viewOnceMessage: {
+                message: {
+                    interactiveMessage,
+                },
+            },
+        }, { userJid: conn.user.jid, quoted: m })
+        conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id});
     } else {
-        const datas = global;
-        const idioma = datas.db.data.users[m.sender].language;
-        const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`));
-        const traductor = _translate.plugins.buscador_yts;      
-        const results = await yts(text);
-        const tes = results.all;
-        const teks = results.all.map((v) => {
-            switch (v.type) {
-                case 'video': return `
-° *_${v.title}_*
-↳ 🫐 *_${traductor.texto2[0]}_* ${v.url}
-↳ 🕒 *_${traductor.texto2[1]}_* ${v.timestamp}
-↳ 📥 *_${traductor.texto2[2]}_* ${v.ago}
-↳ 👁 *_${traductor.texto2[3]}_* ${v.views}`;
-            }
-        }).filter((v) => v).join('\n\n◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦\n\n');
-        conn.sendFile(m.chat, tes[0].thumbnail, 'error.jpg', teks.trim(), m);      
+        // المعالج في حالة سطح المكتب أو الويب
     }    
 };
-
 handler.help = ['ytsearch <texto>'];
 handler.tags = ['search'];
 handler.command = /^(بحث|yts|searchyt|buscaryt|videosearch|audiosearch)$/i;
