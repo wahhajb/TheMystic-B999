@@ -1,21 +1,8 @@
- 
+
 import { prepareWAMessageMedia, generateWAMessageFromContent, getDevice } from  @whiskeysockets/baileys 
 import yts from  yt-search ;
 import fs from  fs ;
-// دالة التحميل
-async function loading(conn, m) {
-    var hawemod = [
-        "《 █▒▒▒▒▒▒▒▒▒▒▒》10%",
-        "《 ████▒▒▒▒▒▒▒▒》30%",
-        "《 ███████▒▒▒▒▒》50%",
-        "《 ██████████▒▒》80%",
-        "《 ████████████》100%"
-    ];
-    for (let i = 0; i < hawemod.length; i++) {
-        await conn.sendMessage(m.chat, hawemod[i], MessageType.text);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-}
+
 const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
     const datas = global;
     const idioma = datas.db.data.users[m.sender].language;
