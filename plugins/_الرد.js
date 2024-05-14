@@ -4,7 +4,7 @@ conn.reply(m.chat,`
 }
 handler.help = ['bzmzjdks']
 handler.tags = ['fun']
-handler.command = /(بوت)$/i
+handler.command =['بوت']
 export default handler
 
 function pickRandom(list) {
