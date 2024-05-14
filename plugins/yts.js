@@ -1,22 +1,11 @@
-/*
-
-- Agradecimiento a la comunidad de "WSApp • Developers"
- * https://chat.whatsapp.com/FaQunmlp9BmDRk6lEEc9FJ
-- Agradecimiento especial a Carlos (PT) por los codigos de interactiveMessage (botones)
-- Agradecimiento a Darlyn1234 por la estructura de uso en este codigo y quoted
- * https://github.com/darlyn1234
-- Adaptacion de imagen en tipo lista, codigo y funcionamiento por BrunoSobrino
- * https://github.com/BrunoSobrino
-
-*/
-import { prepareWAMessageMedia, generateWAMessageFromContent, getDevice } from '@whiskeysockets/baileys'
+ import { prepareWAMessageMedia, generateWAMessageFromContent, getDevice } from '@whiskeysockets/baileys'
 import yts from 'yt-search';
 import fs from 'fs';
 
 const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
     const datas = global;
     const idioma = datas.db.data.users[m.sender].language;
-    const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`));
+    const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`));
     const traductor = _translate.plugins.buscador_yts;
     const device = await getDevice(m.key.id);
     
@@ -31,10 +20,10 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
 
   var messa = await prepareWAMessageMedia({ image: {url: randomVideo.thumbnail}}, { upload: conn.waUploadToServer })
   const interactiveMessage = {
-    body: { text: `*—◉ Resultados obtenidos:* ${results.videos.length}\n*—◉ Video aleatorio:*\n*-› Title:* ${randomVideo.title}\n*-› Author:* ${randomVideo.author.name}\n*-› Views:* ${randomVideo.views}\n*-› ${traductor.texto2[0]}:* ${randomVideo.url}\n*-› Imagen:* ${randomVideo.thumbnail}`.trim() },
+    body: { text: `*النتائج التي تم الحصول عليها:* ${results.videos.length}\n*—◉ Video aleatorio:*\n*-› العنوان:* ${randomVideo.title}\n*-› القناة:* ${randomVideo.author.name}\n*-› المشاهدات:* ${randomVideo.views}\n*-› ${traductor.texto2[0]}:* ${randomVideo.url}\n*-› الصورة:* ${randomVideo.thumbnail}`.trim() },
     footer: { text: `${global.wm}`.trim() },  
       header: {
-          title: `*< YouTube Search />*\n`,
+          title: `*< نتائج البحث في اليوتيوب />*\n`,
           hasMediaAttachment: true,
           imageMessage: messa.imageMessage,
       },
@@ -43,21 +32,21 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
         {
           name: 'single_select',
           buttonParamsJson: JSON.stringify({
-            title: 'OPCIONES DISPONIBLES',
+            title: 'اضغط هنا للتحميل',
             sections: videos.map((video) => ({
               title: video.title,
               rows: [
                 {
                   header: video.title,
                   title: video.author.name,
-                  description: 'Descargar MP3',
-                  id: `${prefijo}play.1 ${video.url}`
+                  description: 'للتحميل مقطع موسيقى MP3',
+                  id: `${prefijo}شغل ${video.url}`
                 },
                 {
                   header: video.title,
                   title: video.author.name,
-                  description: 'Descargar MP4',
-                  id: `${prefijo}play.2 ${video.url}`
+                  description: 'للتحميل مقطع فيديو MP4',
+                  id: `${prefijo}فيد ${video.url}`
                 }
               ]
             }))
@@ -80,7 +69,7 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
   } else {
   const datas = global;
   const idioma = datas.db.data.users[m.sender].language;
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`));
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`));
   const traductor = _translate.plugins.buscador_yts;      
   const results = await yts(text);
   const tes = results.all;
@@ -99,5 +88,5 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
 };
 handler.help = ['ytsearch <texto>'];
 handler.tags = ['search'];
-handler.command = /^(ytsearch|yts|searchyt|buscaryt|videosearch|audiosearch)$/i;
+handler.command = /^(بحث|yts|searchyt|buscaryt|videosearch|audiosearch)$/i;
 export default handler;
