@@ -1,37 +1,21 @@
-async function executeSpecialCommand(userInput) {
-    if (userInput.toLowerCase().includes("مرحبا")) {
-        const specialResponse = "كيف يمكنني مساعدتك اليوم؟";
-        const botResponse = await generateBotResponse(specialResponse);
-        displayBotResponse(botResponse);
+import { createInterface } from 'readline';
+
+const rl = createInterface(process.stdin, process.stdout);
+
+const responses = {
+    "مرحبا": "مرحبًا! كيف يمكنني مساعدتك؟",
+    "كيف حالك": "أنا بخير، شكرًا لسؤالك. كيف يمكنني مساعدتك اليوم؟",
+    "ما هو اسمك": "اسمي هو بوت. كيف يمكنني مساعدتك؟",
+    // يمكنك إضافة المزيد من الردود هنا
+};
+
+rl.on('line', (line) => {
+    const userInput = line.trim().toLowerCase();
+    for (const keyword in responses) {
+        if (userInput.includes(keyword)) {
+            console.log(responses[keyword]);
+            return;
+        }
     }
-}
-
-async function sendMessage() {
-    const userInput = document.getElementById("user-input").value;
-    if (!userInput) return;
-
-    const userMessage = document.createElement("div");
-    userMessage.classList.add("message", "user");
-    userMessage.textContent = userInput;
-
-    const chatMessages = document.getElementById("chat-messages");
-    chatMessages.appendChild(userMessage);
-
-    document.getElementById("user-input").value = "";
-
-    await executeSpecialCommand(userInput);
-
-    try {
-        const botResponse = await generateBotResponse(userInput);
-        displayBotResponse(botResponse);
-    } catch (error) {
-        console.log(error);
-        // يمكن عرض رسالة خطأ للمستخدم هنا
-    }
-}
-
-function generateBotResponse(userInput) {
-    // يمكنك توليد رد البوت هنا بناءً على ما تريده
-    // في هذا المثال، سأقوم بإرجاع رسالة بسيطة
-    return "رد بوت بسيط";
-}
+    console.log("عذرًا، لم أفهم ما تقصده. يمكنك محاولة شيء آخر؟");
+});
