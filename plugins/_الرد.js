@@ -1,11 +1,11 @@
- let handler = async (m, { conn }) => {
+let handler = async (m, { conn }) => {
     let teks = `${pickRandom([
         'مرحبا كيف يمكنني مساعدتك اليوم',
       
     ])}`;
 
-    // التحقق من أن النص يحتوي على ".بوت" ككلمة منفردة مع النقطة في البداية
-    if (/\b\.بوت\b/i.test(m.text)) {
+    // التحقق من أن النص يبدأ بـ ".بوت"
+    if (m.text.toLowerCase().startsWith(".بوت")) {
         conn.reply(m.chat, teks, m, { mentions: { mentionedJid: [m.sender] }});
     }
 }
