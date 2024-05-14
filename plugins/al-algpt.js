@@ -30,7 +30,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
 
     // التحقق من نجاح الطلب
     if (!response.ok) {
-      throw new Error("فشل الطلب إلى خدمة OpenAI API");
+      throw new Error("فشل الطلب إلى خدمة OpenAI API\n يمكنك تجربه .بوت1");
     }
 
     // تحويل الرد إلى JSON
@@ -56,7 +56,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
   } catch (error) {
     // إرسال رسالة الخطأ إذا حدث خطأ ما
     await conn.sendMessage(m.chat, {
-      text: `مرحبا كيف يمكنني مساعدتك اليوم؟:`,
+      text: `مرحبا كيف يمكنني مساعدتك اليوم؟: ${error.message}`,
     });
   }
 }
