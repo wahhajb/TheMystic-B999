@@ -1,7 +1,8 @@
 async function executeSpecialCommand(userInput) {
     if (userInput.toLowerCase().includes("مرحبا")) {
-        const specialResponse = "رد الأمر الخاص";
-        displayBotResponse(specialResponse);
+        const specialResponse = "كيف يمكنني مساعدتك اليوم؟";
+        const botResponse = await generateBotResponse(specialResponse);
+        displayBotResponse(botResponse);
     }
 }
 
