@@ -1,22 +1,23 @@
 let handler = async (m, { conn, command, text }) => {
-	async function loading() {
-    var hawemod = [
-        "《 █▒▒▒▒▒▒▒▒▒▒▒》10%",
-        "《 ████▒▒▒▒▒▒▒▒》30%",
-        "《 ███████▒▒▒▒▒》50%",
-        "《 ██████████▒▒》80%",
-        "《 ████████████》100%"
-    ];
+    async function loading() {
+        var hawemod = [
+            "《 █▒▒▒▒▒▒▒▒▒▒▒》10%",
+            "《 ████▒▒▒▒▒▒▒▒》30%",
+            "《 ███████▒▒▒▒▒》50%",
+            "《 ██████████▒▒》80%",
+            "《 ████████████》100%"
+        ];
 
-    let { key } = await conn.sendMessage(m.chat, {text: tradutor.texto5, mentions: conn.parseMention(response)}, {quoted: m});
+        let { key } = await conn.sendMessage(m.chat, {text: tradutor.texto5, mentions: conn.parseMention(response)}, {quoted: m});
 
-    for (let i = 0; i < hawemod.length; i++) {
-        // conn.sendMessage(m.chat, hawemod[i], { quoted: key });
+        for (let i = 0; i < hawemod.length; i++) {
+            // conn.sendMessage(m.chat, hawemod[i], { quoted: key });
+        }
     }
-}
-    if (!text) return conn.reply(m.chat, 'حط اسم', m)
+
+    if (!text) return conn.reply(m.chat, 'حط اسم', m);
 	
-  let personalidad = `
+    let personalidad = `
 ┏━━°❀❬ *تحليل الشخصية* ❭❀°━━┓
 *┃*
 *┃• الاسم* : ${text}
@@ -31,15 +32,16 @@ let handler = async (m, { conn, command, text }) => {
 *┃• شهرة* : ${pickRandom(['6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%','1%','2,9%','0%','0,4%'])}
 ┗━━━━━━━━━━━━━━━━
 `
-conn.reply(m.chat, personalidad, m, { mentions: conn.parseMention(personalidad) })
+    conn.reply(m.chat, personalidad, m, { mentions: conn.parseMention(personalidad) });
+    await loading(); // تنفيذ الدالة loading()
 }
-handler.help = ['personalidad *<nombre>*']
-handler.tags = ['fun']
-handler.command = /^شخصية|الشخصيه|الشخصية|شخصيه/i
 
-export default handler 
+handler.help = ['personalidad *<nombre>*'];
+handler.tags = ['fun'];
+handler.command = /^شخصية|الشخصيه|الشخصية|شخصيه/i;
+
+export default handler;
 
 function pickRandom(list) {
-  return list[Math.floor(Math.random() * list.length)]
+  return list[Math.floor(Math.random() * list.length)];
 }
-  
