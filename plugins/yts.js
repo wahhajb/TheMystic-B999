@@ -1,7 +1,6 @@
-
-import { prepareWAMessageMedia, generateWAMessageFromContent, getDevice } from  @whiskeysockets/baileys 
-import yts from  yt-search ;
-import fs from  fs ;
+ import { prepareWAMessageMedia, generateWAMessageFromContent, getDevice } from '@whiskeysockets/baileys'
+import yts from 'yt-search';
+import fs from 'fs';
 
 const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
     const datas = global;
@@ -12,7 +11,7 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
     
   if (!text) throw `⚠️ *${traductor.texto1}*`;
     
-  if (device !==  desktop  || device !==  web ) {      
+  if (device !== 'desktop' || device !== 'web') {      
     
   const results = await yts(text);
   const videos = results.videos.slice(0, 20);
@@ -21,32 +20,32 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
 
   var messa = await prepareWAMessageMedia({ image: {url: randomVideo.thumbnail}}, { upload: conn.waUploadToServer })
   const interactiveMessage = {
-    body: { text: `*النتائج التي تم الحصول عليها:* ${results.videos.length}\n*—◉ Video aleatorio:*\n*-› العنوان:* ${randomVideo.title}\n*-› القناة:* ${randomVideo.author.name}\n*-› المشاهدات:* ${randomVideo.views}\n*-› ${traductor.texto2[0]}:* ${randomVideo.url}\n*-› الصورة:* ${randomVideo.thumbnail}`.trim() },
+    body: { text: `*—◉ Resultados obtenidos:* ${results.videos.length}\n*—◉ Video aleatorio:*\n*-› Title:* ${randomVideo.title}\n*-› Author:* ${randomVideo.author.name}\n*-› Views:* ${randomVideo.views}\n*-› ${traductor.texto2[0]}:* ${randomVideo.url}\n*-› Imagen:* ${randomVideo.thumbnail}`.trim() },
     footer: { text: `${global.wm}`.trim() },  
       header: {
-          title: `*< نتائج البحث في اليوتيوب />*\n`,
+          title: `*< YouTube Search />*\n`,
           hasMediaAttachment: true,
           imageMessage: messa.imageMessage,
       },
     nativeFlowMessage: {
       buttons: [
         {
-          name:  single_select ,
+          name: 'single_select',
           buttonParamsJson: JSON.stringify({
-            title:  اضغط هنا للتحميل ,
+            title: 'اضغط هنا للتحميل_',
             sections: videos.map((video) => ({
               title: video.title,
               rows: [
                 {
                   header: video.title,
                   title: video.author.name,
-                  description:  للتحميل مقطع موسيقى MP3 ,
+                  description: 'للتحميل مقطع موسيقى MP3',
                   id: `${prefijo}شغل ${video.url}`
                 },
                 {
                   header: video.title,
                   title: video.author.name,
-                  description:  للتحميل مقطع فيديو MP4 ,
+                  description: 'للتحميل مقطع فيديو MP4',
                   id: `${prefijo}فيد ${video.url}`
                 }
               ]
@@ -54,7 +53,7 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
           })
         }
       ],
-      messageParamsJson:   
+      messageParamsJson: ''
     }
   };        
             
@@ -76,18 +75,18 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
   const tes = results.all;
   const teks = results.all.map((v) => {
     switch (v.type) {
-      case  video : return `
+      case 'video': return `
 ° *_${v.title}_*
 ↳ 🫐 *_${traductor.texto2[0]}_* ${v.url}
 ↳ 🕒 *_${traductor.texto2[1]}_* ${v.timestamp}
 ↳ 📥 *_${traductor.texto2[2]}_* ${v.ago}
 ↳ 👁 *_${traductor.texto2[3]}_* ${v.views}`;
     }
-  }).filter((v) => v).join( \n\n◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦\n\n );
-  conn.sendFile(m.chat, tes[0].thumbnail,  error.jpg , teks.trim(), m);      
+  }).filter((v) => v).join('\n\n◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦\n\n');
+  conn.sendFile(m.chat, tes[0].thumbnail, 'error.jpg', teks.trim(), m);      
   }    
 };
-handler.help = [ ytsearch <texto> ];
-handler.tags = [ search ];
+handler.help = ['ytsearch <texto>'];
+handler.tags = ['search'];
 handler.command = /^(بحث|yts|searchyt|buscaryt|videosearch|audiosearch)$/i;
 export default handler;
