@@ -1,73 +1,55 @@
-
-import fg from 'api-dylux'
-import { youtubedl, youtubedlv2, youtubedlv3 } from '@bochilteam/scraper'
-let limit = 350
-let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
-	if (!args || !args[0]) throw `❖ مثال :\n${usedPrefix + command} https://youtu.be/pO5dgZrM9Mk`
-    if (!args[0].match(/youtu/gi)) throw `❎ تاكد من ان الرابط من يوتيوب`import ytdl from 'ytdl-core';
+ import ytdl from 'ytdl-core';
 import fs from 'fs';
-import os from 'os';
 
-let limit = 500;
-let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
-  if (!args || !args[0]) throw `*✳️ مــثال:\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI*`;
-  if (!args[0].match(/youtu/gi)) throw `*❎ تـأكـد أنـه رابـط مـن يـوتيـوب*`;
+const handler = async (m, {conn, args, isPrems, isOwner, command}) => {
+  const datas = global
+  const idioma = datas.db.data.users[m.sender].language
+  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const tradutor = _translate.plugins.downloader_ytvideodl
 
-  let chat = global.db.data.chats[m.chat];
-  m.react(rwait);
+  const getRandom = (ext) => {
+    return `${Math.floor(Math.random() * 10000)}${ext}`;
+  };
+  if (args.length === 0) {
+    m.reply(`${tradutor.texto1}`);
+    return;
+  }
   try {
-    const info = await ytdl.getInfo(args[0]);
-    const format = ytdl.chooseFormat(info.formats, { quality: 'highest' });
-    if (!format) {
-      throw new Error('No valid formats found');
+    const urlYt = args[0];
+    if (!urlYt.startsWith('http')) {
+      m.reply(`${tradutor.texto2}`);
+      return;
     }
-
-    if (format.contentLength / (1024 * 1024) >= limit) {
-      return m.reply(`❒ *⚖️ الـمسـاحـه*: ${format.contentLength / (1024 * 1024).toFixed(2)}MB\n❒ *🎞️ الـجـوده*: ${format.qualityLabel}\n\n*❒ الـملـف تـجاوز حـد الـمساحــه* *+${limit} MB*`);
+    const infoYt = await ytdl.getInfo(urlYt);
+    const titleYt = infoYt.videoDetails.title;
+    const randomName = getRandom('.mp4');
+    const stream = ytdl(urlYt, {filter: (info) => info.itag == 22 || info.itag == 18}).pipe(fs.createWriteStream(`./tmp/${randomName}`));
+    m.reply(global.wait);
+    // console.log("Descargando ->", urlYt);
+    await new Promise((resolve, reject) => {
+      stream.on('error', reject);
+      stream.on('finish', resolve);
+    });
+    const stats = fs.statSync(`./tmp/${randomName}`);
+    const fileSizeInBytes = stats.size;
+    const fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
+    // console.log("Tamaño del video: " + fileSizeInMegabytes);
+    if (fileSizeInMegabytes <= 999) {
+      if (command == 'ytshort') {
+        conn.sendMessage( m.chat, {video: fs.readFileSync(`./tmp/${randomName}`), fileName: `${titleYt}.mp4`, mimetype: 'video/mp4'}, {quoted: m});
+      } else {
+        conn.sendMessage( m.chat, {document: fs.readFileSync(`./tmp/${randomName}`), fileName: `${titleYt}.mp4`, mimetype: 'video/mp4'}, {quoted: m});
+      }
+    } else {
+      m.reply(`${tradutor.texto3}`);
     }
-
-    const tmpDir = os.tmpdir();
-    const fileName = `${tmpDir}/${info.videoDetails.videoId}.mp4`;
-
-    const writableStream = fs.createWriteStream(fileName);
-    ytdl(args[0], {
-      quality: format.itag,
-    }).pipe(writableStream);
-
-    writableStream.on('finish', () => {
-      conn.sendFile(
-        m.chat,
-        fs.readFileSync(fileName),
-        `${info.videoDetails.videoId}.mp4`,
-        `*❖───┊ ♪ يــوتـــيــوب ♪ ┊───❖*
-	  
-	  *❏ الـعـنوان: ${info.videoDetails.title}*
-	  *❐ الـمده: ${info.videoDetails.lengthSeconds} seconds*
-	  *❑ الـمـشاهدات: ${info.videoDetails.viewCount}*
-	  *❒ وقــت الـرفـع: ${info.videoDetails.publishDate}*
-	  *❒ الـرابـط: ${args[0]}*`,
-        m,
-        false,
-        { asDocument: chat.useDocument }
-      );
-
-      fs.unlinkSync(fileName); // Delete the temporary file
-      m.react(done);
-    });
-
-    writableStream.on('error', (error) => {
-      console.error(error);
-      m.reply('*جـرب لاحـقاً !*');
-    });
-  } catch (error) {
-    console.error(error);
-    m.reply('*جـرب لاحـقاً !*');
+    fs.unlinkSync(`./tmp/${randomName}`);
+  } catch (e) {
+    m.reply(e.toString());
   }
 };
-
-handler.help = ['ytmp4 <yt-link>'];
-handler.tags = ['dl'];
-handler.command = ['فيديو', 'video'];
-handler.diamond = false;
-
+handler.help = ['ytd'];
+handler.tags = ['downloader'];
+handler.command = ['videodoc', 'documentvid', 'videodocumento', 'فيديو'];
+handler.exp = 3;
 export default handler;
