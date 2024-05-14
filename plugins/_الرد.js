@@ -1,21 +1,20 @@
-import { createInterface } from 'readline';
+let handler = async (m, { conn }) => {
+    let teks = `${pickRandom([
+        'مرحبا كيف يمكنني مساعدتك اليوم',
+      
+    ])}`;
 
-const rl = createInterface(process.stdin, process.stdout);
-
-const responses = {
-    "مرحبا": "مرحبًا! كيف يمكنني مساعدتك؟",
-    "كيف حالك": "أنا بخير، شكرًا لسؤالك. كيف يمكنني مساعدتك اليوم؟",
-    "ما هو اسمك": "اسمي هو بوت. كيف يمكنني مساعدتك؟",
-    // يمكنك إضافة المزيد من الردود هنا
-};
-
-rl.on('line', (line) => {
-    const userInput = line.trim().toLowerCase();
-    for (const keyword in responses) {
-        if (userInput.includes(keyword)) {
-            console.log(responses[keyword]);
-            return;
-        }
+    // تقسيم النص إلى كلمات والتحقق من وجود الكلمة "بوت" ككلمة منفردة
+    let words = m.text.split(" ");
+    if (words.includes("بوت")) {
+        conn.reply(m.chat, teks, m, { mentions: { mentionedJid: [m.sender] }});
     }
-    console.log("عذرًا، لم أفهم ما تقصده. يمكنك محاولة شيء آخر؟");
-});
+}
+handler.customPrefix = /(بوت)$/i;
+handler.command = new RegExp;
+
+export default handler;
+
+function pickRandom(list) {
+    return list[Math.floor(Math.random() * list.length)];
+}
