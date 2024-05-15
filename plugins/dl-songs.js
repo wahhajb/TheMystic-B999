@@ -23,7 +23,7 @@ conn.sendMessage(m.chat, message, { quoted: m });
         const dl_url = await yt.audio[q].download();
         const ttl = await yt.title;
         const size = await yt.audio[q].fileSizeH;
-        await conn.sendMessage(m.chat, {document: {url: dl_url}, mimetype:  audio/mpeg , fileName: `${ttl}.mp3`}, {quoted: m});
+        await conn.sendMessage(m.chat, {audio: {url: dl_url}, mimetype: 'audio/mpeg', fileName: `${ttl}.mp3`}, {quoted: m});
       } catch {
         try {
           const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytaudio2?apikey=${lolkeysapi}&url=${yt_play[0].url}`);
