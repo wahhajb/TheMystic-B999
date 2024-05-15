@@ -29,7 +29,7 @@ conn.sendMessage(m.chat, message, { quoted: m });
           const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytaudio2?apikey=${lolkeysapi}&url=${yt_play[0].url}`);
           const lolh = await lolhuman.json();
           const n = lolh.result.title ||  error ;
-          await conn.sendMessage(m.chat, {document: {url: lolh.result.link}, fileName: `${n}.mp3`, mimetype:  audio/mpeg }, {quoted: m});
+          await conn.sendMessage(m.chat, { audio: { url: lolh.result.link }, fileName: `${n}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m });
         } catch {
           try {
             const searchh = await yts(yt_play[0].url);
