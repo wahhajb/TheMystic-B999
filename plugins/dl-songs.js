@@ -1,7 +1,6 @@
  import fetch from 'node-fetch';
 import axios from 'axios';
 import { youtubedl, youtubedlv2 } from '@bochilteam/scraper';
-import fs from "fs";
 import yts from 'yt-search';
 
 let limit1 = 100;
@@ -9,16 +8,58 @@ let limit2 = 400;
 let limit_a1 = 50;
 let limit_a2 = 400;
 
+const languages = {
+  en: {
+    plugins: {
+      descargas_play: {
+        texto1: ["Please provide a query after", "command."],
+        texto2: [
+          "Title:",
+          "Uploaded:",
+          "Duration:",
+          "Views:",
+          "Author:",
+          "Video ID:",
+          "Type:",
+          "URL:",
+          "Author URL:",
+          "Additional text:"
+        ],
+        texto3: "The audio file is too large, you can download it from",
+        texto4: "Error downloading the audio.",
+        texto5: "The video file is too large, you can download it from",
+        texto6: "Error downloading the video."
+      }
+    }
+  },
+  es: {
+    plugins: {
+      descargas_play: {
+        texto1: ["Por favor proporciona una consulta después de", "comando."],
+        texto2: [
+          "Título:",
+          "Subido:",
+          "Duración:",
+          "Vistas:",
+          "Autor:",
+          "ID del video:",
+          "Tipo:",
+          "URL:",
+          "URL del autor:",
+          "Texto adicional:"
+        ],
+        texto3: "El archivo de audio es demasiado grande, puedes descargarlo desde",
+        texto4: "Error al descargar el audio.",
+        texto5: "El archivo de video es demasiado grande, puedes descargarlo desde",
+        texto6: "Error al descargar el video."
+      }
+    }
+  }
+};
+
 const handler = async (m, { conn, command, args, text, usedPrefix }) => {
   const idioma = global.db.data.users[m.sender].language || 'en';
-  let _translate;
-
-  try {
-    _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`));
-  } catch (error) {
-    throw `Language file not found or invalid for language: ${idioma}`;
-  }
-
+  const _translate = languages[idioma] || languages['en'];
   const tradutor = _translate.plugins.descargas_play;
 
   if (!text) throw `${tradutor.texto1[0]} _${usedPrefix + command} ${tradutor.texto1[1]}`;
