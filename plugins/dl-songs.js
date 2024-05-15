@@ -1,57 +1,58 @@
-import fetch from  node-fetch ;
-import yts from  yt-search ;
-import ytdl from  ytdl-core ;
-import axios from  axios ;
-import {youtubedl, youtubedlv2} from  @bochilteam/scraper ;
-const handler = async (m, {conn, command, args, text, usedPrefix}) => {
+import fetch from 'node-fetch';
+import yts from 'yt-search';
+import ytdl from 'ytdl-core';
+import axios from 'axios';
+import { youtubedl, youtubedlv2 } from '@bochilteam/scraper';
+
+const handler = async (m, { conn, command, args, text, usedPrefix }) => {
   if (!text) throw `*[❗𝐈𝐍𝐅𝐎❗] 𝙽𝙾𝙼𝙱𝚁𝙴 𝙳𝙴 𝙻𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽 𝙵𝙰𝙻𝚃𝙰𝙽𝚃𝙴, 𝙿𝙾𝚁 𝙵𝙰𝚅𝙾𝚁 𝙸𝙽𝙶𝚁𝙴𝚂𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙼𝙰𝚂 𝙴𝙻 𝙽𝙾𝙼𝙱𝚁𝙴/𝚃𝙸𝚃𝚄𝙻𝙾 𝙳𝙴 𝚄𝙽𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽*\n\n*—◉ 𝙴𝙹𝙴𝙼𝙿𝙻𝙾:*\n*${usedPrefix + command} Good Feeling - Flo Rida* `;
   try {
-    const yt_play = await search(args.join(   ));
-    let additionalText =   ;
-    if (command ===  play3  || command ==  playdoc ) {
-      additionalText =  audio 🔊 ;
-    } else if (command ===  play4  || command ==  playdoc2 ) {
-      additionalText =  video 🎥 ;
+    const yt_play = await search(args.join(' '));
+    let additionalText = '';
+    if (command === 'play3' || command == 'playdoc') {
+      additionalText = 'audio 🔊';
+    } else if (command === 'play4' || command == 'playdoc2') {
+      additionalText = 'video 🎥';
     }
     const message = "جاري تحميل طلبك...";
-conn.sendMessage(m.chat, message, { quoted: m });
-    if (command ==  play3  || command ==  playdoc ) {
+    conn.sendMessage(m.chat, message, { quoted: m });
+    if (command == 'play3' || command == 'playdoc') {
       try {
-        const q =  128kbps ;
+        const q = '128kbps';
         const v = yt_play[0].url;
         const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
         const dl_url = await yt.audio[q].download();
         const ttl = await yt.title;
         const size = await yt.audio[q].fileSizeH;
-        await conn.sendMessage(m.chat, {audio: {url: dl_url}, mimetype: 'audio/mpeg', fileName: `${ttl}.mp3`}, {quoted: m});
+        conn.sendFile(m.chat, dl_url, `${ttl}.mp3`, `*▢ 𝚃𝙸𝚃𝚄𝙻𝙾*: ${ttl}\n*▢ 𝙿𝙴𝚂𝙾 𝙳𝙴𝙻 𝚂𝙸𝚉𝙴*: ${size}`, m);
       } catch {
         try {
           const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytaudio2?apikey=${lolkeysapi}&url=${yt_play[0].url}`);
           const lolh = await lolhuman.json();
-          const n = lolh.result.title ||  error ;
-          await conn.sendMessage(m.chat, { audio: { url: lolh.result.link }, fileName: `${n}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m });
+          const n = lolh.result.title || 'error';
+          conn.sendFile(m.chat, lolh.result.link, `${n}.mp3`, '', m);
         } catch {
           try {
             const searchh = await yts(yt_play[0].url);
-            const __res = searchh.all.map((v) => v).filter((v) => v.type ==  video );
-            const infoo = await ytdl.getInfo( https://youtu.be/  + __res[0].videoId);
-            const ress = await ytdl.chooseFormat(infoo.formats, {filter:  audioonly });
-            conn.sendMessage(m.chat, {audio: {url: ress.url}, fileName: __res[0].title +  .mp3 , mimetype:  audio/mp4 }, {quoted: m});
+            const __res = searchh.all.map((v) => v).filter((v) => v.type == 'video');
+            const infoo = await ytdl.getInfo('https://youtu.be/' + __res[0].videoId);
+            const ress = await ytdl.chooseFormat(infoo.formats, { filter: 'audioonly' });
+            conn.sendFile(m.chat, ress.url, `${__res[0].title}.mp3`, '', m);
           } catch {
-            await conn.reply(m.chat,  *[❗] 𝙴𝚁𝚁𝙾𝚁 𝙽𝙾 𝙵𝚄𝙴 𝙿𝙾𝚂𝙸𝙱𝙻𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚁 𝙴𝙻 𝙰𝚄𝙳𝙸𝙾* , m);
+            throw '*[❗] 𝙴𝚁𝚁𝙾𝚁 𝙽𝙾 𝙵𝚄𝙴 𝙿𝙾𝚂𝙸𝙱𝙻𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚁 𝙴𝙻 𝙰𝚄𝙳𝙸𝙾*';
           }
         }
       }
     }
-    if (command ==  play4  || command ==  playdoc2 ) {
+    if (command == 'play4' || command == 'playdoc2') {
       try {
-        const qu =  360 ;
-        const q = qu +  p ;
+        const qu = '360';
+        const q = qu + 'p';
         const v = yt_play[0].url;
         const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
         const dl_url = await yt.video[q].download();
         const ttl = await yt.title;
-        const size = await yt.video[q].fileSizeH;
+        const size = await yt.video[q].fileSizeH
         await await conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype:  video/mp4 , caption: `▢ 𝚃𝙸𝚃𝚄𝙻𝙾: ${ttl}\n▢ 𝙿𝙴𝚂𝙾 𝙳𝙴𝙻 𝚅𝙸𝙳𝙴𝙾: ${size}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m});
       } catch {
         try {
