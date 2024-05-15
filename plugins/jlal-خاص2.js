@@ -26,40 +26,40 @@ let handler = async (m, { conn, text }) => {
     let response = '';
 
     // Add details directly to the response
-    response += `𝑁𝑎𝑚𝑒: ${data.name}\n`;
-    response += `𝙶𝚎𝚗𝚍𝚎𝚛: ${data.gender}\n`;
-    response += `𝚂𝚌𝚘𝚛𝚎: ${data.score}\n`;
-    response += `𝚂𝚌𝚘𝚛𝚎: ${data.access}\n`;
-    response += `𝙴𝚗𝚑𝚊𝚗𝚌𝚎𝚍: ${data.enhanced}\n`;
+    response += `ð‘ð‘Žð‘šð‘’: ${data.name}\n`;
+    response += `ð™¶ðšŽðš—ðšðšŽðš›: ${data.gender}\n`;
+    response += `ðš‚ðšŒðš˜ðš›ðšŽ: ${data.score}\n`;
+    response += `ðš‚ðšŒðš˜ðš›ðšŽ: ${data.access}\n`;
+    response += `ð™´ðš—ðš‘ðšŠðš—ðšŒðšŽðš: ${data.enhanced}\n`;
 
     // Handle phone details
     if (data.phones && data.phones.length > 0) {
       let phone = data.phones[0];
-      response += `𝙿𝚑𝚘𝚗𝚎:\n`;
-      response += `  - 𝙚164𝙁𝙤𝙧𝙢𝙖𝙩: ${phone.e164Format}\n`;
-      response += `  - 𝙣𝙪𝙢𝙗𝙚𝙧𝙏𝙮𝙥𝙚: ${phone.numberType}\n`;
-      response += `  - 𝙣𝙖𝙩𝙞𝙤𝙣𝙖𝙡𝙁𝙤𝙧𝙢𝙖𝙩: ${phone.nationalFormat}\n`;
-      response += `  - 𝙙𝙞𝙖𝙡𝙞𝙣𝙜𝘾𝙤𝙙𝙚: ${phone.dialingCode}\n`;
-      response += `  - 𝙘𝙤𝙪𝙣𝙩𝙧𝙮𝘾𝙤𝙙𝙚: ${phone.countryCode}\n`;
-      response += `  - 𝙘𝙖𝙧𝙧𝙞𝙚𝙧: ${phone.carrier}\n`;
-      response += `  - 𝙩𝙮𝙥𝙚: ${phone.type}\n`;
+      response += `ð™¿ðš‘ðš˜ðš—ðšŽ:\n`;
+      response += `  - ð™š164ð™ð™¤ð™§ð™¢ð™–ð™©: ${phone.e164Format}\n`;
+      response += `  - ð™£ð™ªð™¢ð™—ð™šð™§ð™ð™®ð™¥ð™š: ${phone.numberType}\n`;
+      response += `  - ð™£ð™–ð™©ð™žð™¤ð™£ð™–ð™¡ð™ð™¤ð™§ð™¢ð™–ð™©: ${phone.nationalFormat}\n`;
+      response += `  - ð™™ð™žð™–ð™¡ð™žð™£ð™œð˜¾ð™¤ð™™ð™š: ${phone.dialingCode}\n`;
+      response += `  - ð™˜ð™¤ð™ªð™£ð™©ð™§ð™®ð˜¾ð™¤ð™™ð™š: ${phone.countryCode}\n`;
+      response += `  - ð™˜ð™–ð™§ð™§ð™žð™šð™§: ${phone.carrier}\n`;
+      response += `  - ð™©ð™®ð™¥ð™š: ${phone.type}\n`;
     }
 
     // Handle address details
     if (data.addresses && data.addresses.length > 0) {
       let address = data.addresses[0];
-      response += `𝘈𝘥𝘥𝘳𝘦𝘴𝘴𝘦𝘴:\n`;
-      response += `  - 𝗮𝗱𝗱𝗿𝗲𝘀𝘀: ${address.address}\n`;
-      response += `  - 𝘀𝘁𝗿𝗲𝗲𝘁: ${address.street}\n`;
-      response += `  - 𝘇𝗶𝗽𝗖𝗼𝗱𝗲: ${address.zipCode}\n`;
-      response += `  - 𝗰𝗶𝘁𝘆: ${address.city}\n`;
-      response += `  - 𝗰𝗼𝘂𝗻𝘁𝗿𝘆𝗖𝗼𝗱𝗲: ${address.countryCode}\n`;
-      response += `  - 𝘁𝗶𝗺𝗲𝗭𝗼𝗻𝗲: ${address.timeZone}\n`;
-      response += `  - 𝘁𝘆𝗽𝗲: ${address.type}\n`;
+      response += `ð˜ˆð˜¥ð˜¥ð˜³ð˜¦ð˜´ð˜´ð˜¦ð˜´:\n`;
+      response += `  - ð—®ð—±ð—±ð—¿ð—²ð˜€ð˜€: ${address.address}\n`;
+      response += `  - ð˜€ð˜ð—¿ð—²ð—²ð˜: ${address.street}\n`;
+      response += `  - ð˜‡ð—¶ð—½ð—–ð—¼ð—±ð—²: ${address.zipCode}\n`;
+      response += `  - ð—°ð—¶ð˜ð˜†: ${address.city}\n`;
+      response += `  - ð—°ð—¼ð˜‚ð—»ð˜ð—¿ð˜†ð—–ð—¼ð—±ð—²: ${address.countryCode}\n`;
+      response += `  - ð˜ð—¶ð—ºð—²ð—­ð—¼ð—»ð—²: ${address.timeZone}\n`;
+      response += `  - ð˜ð˜†ð—½ð—²: ${address.type}\n`;
     }
 
     // Add 'creator' property to the response
-    response += `𝗖𝗥𝗘𝗔𝗧𝗢𝗥: ${data.creator}\n`;
+    response += `ð—–ð—¥ð—˜ð—”ð—§ð—¢ð—¥: ${data.creator}\n`;
 
     m.reply(response);
   } catch (error) {
@@ -76,7 +76,7 @@ export default handler;*/
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text }) => {
-  if (!text) throw 'اين هو الرقم الذي تريد البحث عنه ?\nمثال : \n .truecaller2 ++96773315673';
+  if (!text) throw 'Ø§ÙŠÙ† Ù‡Ùˆ Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø°ÙŠ ØªØ±ÙŠØ¯ Ø§Ù„Ø¨Ø­Ø« Ø¹Ù†Ù‡ ?\nÙ…Ø«Ø§Ù„ : \n .truecaller2 ++96773315673';
 
   try {
     let res = await fetch(`https://inrl-web.onrender.com/api/truecaller?number=${text}`);
@@ -94,7 +94,7 @@ let handler = async (m, { conn, text }) => {
 
     let milf = '';
     for (let prop in json) {
-      milf += ` 1�7 *${prop}:* ${json[prop]}\n`;
+      milf += `â€„1¤7 *${prop}:* ${json[prop]}\n`;
     }
 
     m.reply(milf);
@@ -106,6 +106,6 @@ let handler = async (m, { conn, text }) => {
 
 handler.help = ['true'];
 handler.tags = ['tools'];
-handler.command = /^(�1�6�1�9�1�32)$/i;
+handler.command = /^(خاص2)$/i;
 
 export default handler;
