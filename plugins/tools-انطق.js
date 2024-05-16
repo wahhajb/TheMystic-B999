@@ -1,7 +1,7 @@
-import fetch from 'node-fetch';
+ import fetch from 'node-fetch';
 
 const handler = async (m, { conn, usedPrefix, command, text }) => {
-  const match = text.match(/^(\w+)\s*\|\s*(.+)/i);
+  const match = text.match(/^(\d+)\s*\|\s*(.+)/i);
   if (!match) {
     const voices = await getVoices();
     const voiceNames = voices.voices.map((voice, index) => `${index + 1}`).join('\n');
@@ -17,7 +17,7 @@ const handler = async (m, { conn, usedPrefix, command, text }) => {
   }
   const audio = await convertTextToSpeech(inputText, voice.voice_id);
   if (audio) {
-    conn.sendMessage(m.chat, { audio: audio.audio, fileName: `error.mp3`, mimetype: 'audio/mpeg', ptt: true }, { quoted: m });
+    conn.sendMessage(m.chat, { audio: audio.audio, fileName: `speech.mp3`, mimetype: 'audio/mpeg', ptt: true }, { quoted: m });
   }
 };
 
@@ -34,19 +34,28 @@ const getVoices = async () => {
     return voices;
   } catch (error) {
     console.error('حدث خطأ أثناء الحصول على الأصوات:', error);
-    return [];
+    return { voices: [] };
   }
 };
 
 const convertTextToSpeech = async (text, voiceId) => {
   const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
-  const options = { method: 'POST', headers: { 'Content-Type': 'application/json', 'xi-api-key': apiKey }, body: JSON.stringify({ text: text, model_id: 'eleven_monolingual_v1', voice_settings: { stability: 0.5, similarity_boost: 0.5 }})};
+  const options = { 
+    method: 'POST', 
+    headers: { 'Content-Type': 'application/json', 'xi-api-key': apiKey }, 
+    body: JSON.stringify({ 
+      text: text, 
+      model_id: 'eleven_multilingual_v1', // استخدام النموذج متعدد اللغات
+      voice_settings: { stability: 0.5, similarity_boost: 0.5 },
+      language: 'ar' // تحديد اللغة العربية
+    })
+  };
   try {
     const response = await fetch(url, options);
     const audioBuffer = await response.buffer();
     return { audio: audioBuffer };
   } catch (error) {
     console.error('حدث خطأ أثناء توليد الصوت:', error);
-    return [];  
+    return null;  
   }
 };
