@@ -9,10 +9,8 @@ m.reply(done)}
 handler.help = ['tinyurl','acortar'].map(v => v + ' <link>')
 handler.tags = ['tools']
 handler.command = /^(tinyurl|short|تصغير|قص|تقصير)$/i
-handler.limit = 1
-handler.register = true
-handler.fail = null
-export default handler
+handler.fail = null;
+export default handler;
 
 
 
