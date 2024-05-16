@@ -1,38 +1,52 @@
- import gtts from  'node-gtts'
-import { readFileSync, unlinkSync } from  'fs' 
-import { join } from  'path'
-const defaultLang =  'ar'
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-let lang = args[0]
-let text = args.slice(1).join(' ')
-if ((args[0] ||'').length !== 2) {
-lang = defaultLang
-text = args.join('')
-}
-if (!text && m.quoted?.text) text = m.quoted.text
-let res
-try { res = await tts(text, lang) }
-catch (e) {
-m.reply(e +'')
-text = args.join('')
-if (!text) throw `تحويل نص لاوديو مثال \n السلام عليكم*`
-res = await tts(text, defaultLang)
-} finally {
-if (res) conn.sendFile(m.chat, res,  'tts.opus', null, m, true)
-}}
-handler.help = ['tts <lang> <teks>']
-handler.tags = ['tools']
-handler.command = /^انطق$/i
-export default handler
-function tts(text, lang ='ar') {
-console.log(lang, text)
-return new Promise((resolve, reject) => {
-try {
-let tts = gtts(lang)
-let filePath = join(global.__dirname(import.meta.url),  '../tmp', (1 * new Date) +  '.wav')
-tts.save(filePath, text, () => {
-resolve(readFileSync(filePath))
-unlinkSync(filePath)
-})
-} catch (e) { reject(e) }
-})}
+ import fetch from 'node-fetch';
+
+const handler = async (m, { conn, usedPrefix, command, text }) => {
+  const match = text.match(/^(\w+)\s*\|\s*(.+)/i);
+  if (!match) {
+    const voices = await getVoices();
+    const voiceNames = voices.voices.map(voice => voice.name).join('\n◉ ');
+    return m.reply(`*[❗] صيغة استخدام غير صحيحة، ينقص الصوت أو النص.*\n\n*—◉ مثال:*\n◉ ${usedPrefix + command} اسم_الصوت | النص\n\n*—◉ مثال للاستخدام:*\n◉ ${usedPrefix + command} ${voices.voices[0].name} | هذا نص تجريبي\n\n*—◉ قائمة الأصوات المتاحة:*\n◉ ${voiceNames}`
+    );
+  }
+  const [, voiceName, inputText] = match;
+  const voices = await getVoices();
+  const voice = voices.voices.find(voice => voice.name.toLowerCase() === voiceName.toLowerCase());
+  if (!voice) {
+    const voiceNames = voices.voices.map(voice => voice.name).join('\n◉ ');
+    return m.reply(`[❗] لم يتم العثور على أي صوت بالاسم "${voiceName}".\n\n—◉ قائمة الأصوات المتاحة:\n◉ ${voiceNames}`);
+  }
+  const audio = await convertTextToSpeech(inputText, voice.voice_id);
+  if (audio) {
+    conn.sendMessage(m.chat, { audio: audio.audio, fileName: `error.mp3`, mimetype: 'audio/mpeg', ptt: true }, { quoted: m });
+  }
+};
+
+handler.command = /^(انطق)$/i;
+export default handler;
+
+const apiKey = 'a0e2c6022f1aeb28b5020b1dd0faf6ee';
+const getVoices = async () => {
+  const url = 'https://api.elevenlabs.io/v1/voices';
+  const options = { method: 'GET', headers: { 'Content-Type': 'application/json', 'xi-api-key': apiKey }};
+  try {
+    const response = await fetch(url, options);
+    const voices = await response.json();
+    return voices;
+  } catch (error) {
+    console.error('حدث خطأ أثناء الحصول على الأصوات:', error);
+    return [];
+  }
+};
+
+const convertTextToSpeech = async (text, voiceId) => {
+  const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
+  const options = { method: 'POST', headers: { 'Content-Type': 'application/json', 'xi-api-key': apiKey }, body: JSON.stringify({ text: text, model_id: 'eleven_monolingual_v1', voice_settings: { stability: 0.5, similarity_boost: 0.5 }})};
+  try {
+    const response = await fetch(url, options);
+    const audioBuffer = await response.buffer();
+    return { audio: audioBuffer };
+  } catch (error) {
+    console.error('حدث خطأ أثناء توليد الصوت:', error);
+    return [];  
+  }
+};
