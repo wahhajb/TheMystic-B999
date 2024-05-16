@@ -1,0 +1,29 @@
+import fetch from 'node-fetch';
+
+const handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    throw "> *مرحبًا، أنا خدمة `Math-Ai`، أساعدك في حل المشاكل الرياضية وإجراء العمليات الحسابية.*";
+  }
+  try {
+    conn.sendPresenceUpdate('composing', m.chat);
+    const BK9api = `https://api.bk9.site/ai/mathssolve?q=${encodeURIComponent(text)}`;
+    const response = await fetch(BK9api);
+    const data = await response.json();
+    if (data.status && data.BK9) {
+      const respuestaAPI = data.BK9;
+      conn.reply(m.chat, respuestaAPI, m);
+    } else {
+      throw "> *خطأ ⚠️: لم يتم العثور على حل للمشكلة.*";
+    }
+  } catch (error) {
+    console.error(error);
+    throw "> *خطأ ⚠️: حدث خطأ أثناء الاتصال بالخدمة.*";
+  }
+};
+
+handler.command = /^(حاسبة|مساعد_رياضيات)$/i;
+handler.tags = ['ai'];
+export default handler;
+
+// بواسطة سعد - @nm9h
+// شكرًا لخدمة BK9 API
