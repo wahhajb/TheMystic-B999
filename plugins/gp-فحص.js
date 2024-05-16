@@ -29,7 +29,7 @@ handler.owner = false
 const extractGroupMetadata = (result) => {
 	const group = baileys.getBinaryNodeChild(result, 'group')
 	const descChild = baileys.getBinaryNodeChild(group, 'description')
-	let desc
+	let descn
 	if (descChild) desc = baileys.getBinaryNodeChild(descChild, 'body')?.content
 	const metadata = {
 		id: group.attrs.id.includes('@') ? group.attrs.id : baileys.jidEncode(group.attrs.id, 'g.us'),
