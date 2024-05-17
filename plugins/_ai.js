@@ -1,13 +1,15 @@
-import fetch from  node-fetch ;
+import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+dotenv.config();
 
-async function chatWithGPT(userInput, apiKey) {
-    const apiUrl =  https://api.openai.com/v1/engines/davinci-codex/completions ;
+async function chatWithGPT(userInput) {
+    const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
 
     const response = await fetch(apiUrl, {
-        method:  POST ,
+        method: 'POST',
         headers: {
-             Content-Type :  application/json ,
-             Authorization : `Bearer ${apiKey}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
         },
         body: JSON.stringify({
             prompt: userInput,
@@ -20,29 +22,27 @@ async function chatWithGPT(userInput, apiKey) {
 }
 
 let handler = async (message) => {
-    const apiKey =  sk-proj-FZRfT8FSXjcNuvee6VvBT3BlbkFJbePTnfCkC3C4TCL9bZnO ; // المفتاح الجديد الذي حصلت عليه
-
     let userInput;
     if (message.args.length >= 1) {
-        userInput = message.args.join(   );
+        userInput = message.args.join(' ');
     } else {
         if (message.quoted && message.quoted.text) {
             userInput = message.quoted.text;
         } else {
-            throw  الرجاء إدخال نص ;
+            throw 'الرجاء إدخال نص';
         }
     }
     
     try {
-        let response = await chatWithGPT(userInput, apiKey);
+        let response = await chatWithGPT(userInput);
         message.reply(response);
     } catch (error) {
-        message.reply( حدث خطأ );
+        message.reply('حدث خطأ');
     }
 };
 
-handler.help = [ gpt ];
-handler.tags = [ ai ];
-handler.command = /^gptai$/i;
+handler.help = ['gpt'];
+handler.tags = ['ai'];
+handler.command = /^جيبيتي$/i;
 
 export default handler;
