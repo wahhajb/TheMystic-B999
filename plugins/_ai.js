@@ -67,5 +67,5 @@ const handler = async (m, {conn, text, usedPrefix, command}) => {
    }
  }
 };
-handler.command = /^(openai|chatgpt|ia|robot|openai2|chatgpt2|ia2|robot2|Mystic|MysticBot)$/i;
+handler.command = /^(openai|chatgpt|ia|شعبوط|openai2|chatgpt2|ia2|robot2|Mystic|MysticBot)$/i;
 export default handler;
