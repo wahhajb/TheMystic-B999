@@ -1,414 +1,108 @@
-import {watchFile, unwatchFile} from 'fs';
-import chalk from 'chalk';
-import {fileURLToPath} from 'url';
-import fs from 'fs';
-import cheerio from 'cheerio';
-import fetch from 'node-fetch';
+ import fetch from 'node-fetch';
 import axios from 'axios';
-import moment from 'moment-timezone';
-
-/* Para agregar más APIs asegurate de poner global.apiname = ['APIKey'] */ /* By Skid 🤑 */
-
-global.openai_key = 'sk-0';
-/* Obtén tu API Key en este enlace: https://platform.openai.com/account/api-keys */
-
-global.openai_org_id = 'org-3';
-/* Obtén tu ID de organización en este enlace: https://platform.openai.com/account/org-settings */
-global.openai_key = 'sk-proj-FZRfT8FSXjcNuvee6VvBT3BlbkFJbePTnfCkC3C4TCL9bZnO';
-
-global.keysZens = ['LuOlangNgentot', 'c2459db922', '37CC845916', '6fb0eff124', 'hdiiofficial', 'fiktod', 'BF39D349845E', '675e34de8a', '0b917b905e6f'];
-global.keysxxx = keysZens[Math.floor(keysZens.length * Math.random())];
-global.keysxteammm = ['29d4b59a4aa687ca', '5LTV57azwaid7dXfz5fzJu', 'cb15ed422c71a2fb', '5bd33b276d41d6b4', 'HIRO', 'kurrxd09', 'ebb6251cc00f9c63'];
-global.keysxteam = keysxteammm[Math.floor(keysxteammm.length * Math.random())];
-global.keysneoxrrr = ['5VC9rvNx', 'cfALv5'];
-global.keysneoxr = keysneoxrrr[Math.floor(keysneoxrrr.length * Math.random())];
-global.lolkeysapi = ['GataDios']; // ['BrunoSobrino_2']
-global.itsrose = ['4b146102c4d500809da9d1ff'];
-
-global.APIs = {
-  CFROSAPI: 'https://api.cafirexos.com',
-  xteam: 'https://api.xteam.xyz',
-  dzx: 'https://api.dhamzxploit.my.id',
-  lol: 'https://api.lolhuman.xyz',
-  neoxr: 'https://api.neoxr.my.id',
-  zenzapis: 'https://api.zahwazein.xyz',
-  akuari: 'https://api.akuari.my.id',
-  akuari2: 'https://apimu.my.id',
-  fgmods: 'https://api-fgmods.ddns.net',
-  botcahx: 'https://api.botcahx.biz.id',
-  ibeng: 'https://api.ibeng.tech/docs',
-  rose: 'https://api.itsrose.site',
-  popcat: 'https://api.popcat.xyz',
-  xcoders: 'https://api-xcoders.site',
-  vihangayt: 'https://vihangayt.me',
-  erdwpe: 'https://api.erdwpe.com',
-  xyroinee: 'https://api.xyroinee.xyz',
-  nekobot: 'https://nekobot.xyz'
-},
-global.APIKeys = {
-  'https://api.xteam.xyz': `${keysxteam}`,
-  'https://api.lolhuman.xyz': 'GataDios',
-  'https://api.neoxr.my.id': `${keysneoxr}`,
-  'https://api.zahwazein.xyz': `${keysxxx}`,
-  'https://api-fgmods.ddns.net': 'fg-dylux',
-  'https://api.botcahx.biz.id': 'Admin',
-  'https://api.ibeng.tech/docs': 'tamvan',
-  'https://api.itsrose.site': 'Rs-Zeltoria',
-  'https://api-xcoders.site': 'Frieren',
-  'https://api.xyroinee.xyz': 'uwgflzFEh6',
-  'https://apikasu.onrender.com': 'ApiKey'
+import translate from '@vitalets/google-translate-api';
+import {Configuration, OpenAIApi} from 'openai';
+const configuration = new Configuration({organization: global.openai_org_id, apiKey: global.openai_key});
+const openaiii = new OpenAIApi(configuration);
+const handler = async (m, {conn, text, usedPrefix, command}) => {
+  if (usedPrefix == 'a' || usedPrefix == 'A') return;
+  if (!text) throw `مرحبا اصبح ايتاشي يدعم ChatGPT عندك اسئلة او استفسار اي شي قول\n\n❏ على سبيل المثال\n❏ ${usedPrefix + command} افضل انمي\n❏ ${usedPrefix + command} عايز نصيحه\n❏ ${usedPrefix + command} قول نكته`;
+  try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        //let sistema1 = await fetch(`https://raw.githubusercontent.com/Skidy89/chat-gpt-jailbreak/main/Text.txt`).then(v => v.text());
+        let sistema1 = `سوف تعمل بمثابة WhatsApp Bot الذي أنشأه زورو  .`;
+        async function getOpenAIChatCompletion(texto) {
+        const openaiAPIKey = global.openai_key;
+        let chgptdb = global.chatgpt.data.users[m.sender];
+        chgptdb.push({ role: 'user', content: texto });
+        const url = "https://api.openai.com/v1/chat/completions";
+        const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${openaiAPIKey}` };
+        const data = { "model": "gpt-3.5-turbo", "messages": [{ "role": "system", "content": sistema1 }, ...chgptdb, ]};
+        const response = await fetch(url, {method: "POST", headers: headers, body: JSON.stringify(data)});
+        const result = await response.json();
+        const finalResponse = result.choices[0].message.content;
+        return finalResponse;
+        };
+        let respuesta = await getOpenAIChatCompletion(text);
+        if (respuesta == 'error' || respuesta == '' || !respuesta) return XD; // causar error undefined para usar otra api
+        m.reply(`${respuesta}`.trim());
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const botIA222 = await openaiii.createCompletion({model: 'text-davinci-003', prompt: text, temperature: 0.3, max_tokens: 4097, stop: ['Ai:', 'Human:'], top_p: 1, frequency_penalty: 0.2, presence_penalty: 0});
+        if (botIA222.data.choices[0].text == 'error' || botIA222.data.choices[0].text == '' || !botIA222.data.choices[0].text) return XD; // causar error undefined para usar otra api
+        m.reply(botIA222.data.choices[0].text.trim());
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const syms1 = `سوف تعمل بمثابة WhatsApp Bot الذي أنشأه زورو.`;
+        const fgapi1 = await fetch(`https://api-fgmods.ddns.net/api/info/openai?text=${text}&symsg=${syms1}&apikey=XlwAnX8d`);
+        const fgjson1 = await fgapi1.json();
+        if (fgjson1.result == 'error' || fgjson1.result == '' || !fgjson1.result) return XD; // causar error undefined para lanzar msg de error
+        m.reply(`${fgjson1.result}`.trim());
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const vihangayt1 = await fetch(`https://vihangayt.me/tools/chatgpt?q=${text}`);
+        const vihangaytjson1 = await vihangayt1.json();
+        if (vihangaytjson1.data == 'error' || vihangaytjson1.data == '' || !vihangaytjson1.data) return XD; // causar error undefined para usar otra api
+        m.reply(`${vihangaytjson1.data}`.trim());
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const vihangayt2 = await fetch(`https://vihangayt.me/tools/chatgpt2?q=${text}`);
+        const vihangaytjson2 = await vihangayt2.json();
+        if (vihangaytjson2.data == 'error' || vihangaytjson2.data == '' || !vihangaytjson2.data) return XD; // causar error undefined para usar otra api
+        m.reply(`${vihangaytjson2.data}`.trim());
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const vihangayt3 = await fetch(`https://vihangayt.me/tools/chatgpt3?q=${text}`);
+        const vihangaytjson3 = await vihangayt3.json();
+        if (vihangaytjson3.data == 'error' || vihangaytjson3.data == '' || !vihangaytjson3.data) return XD; // causar error undefined para usar otra api
+        m.reply(`${vihangaytjson3.data}`.trim());        
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const tioress22 = await fetch(`https://api.lolhuman.xyz/api/openai?apikey=${lolkeysapi}&text=${text}&user=${m.sender}`);
+        const hasill22 = await tioress22.json();
+        if (hasill22.result == 'error' || hasill22.result == '' || !hasill22.result) return XD; // causar error undefined para usar otra api
+        const hasill22_result = await translate(`${hasill22.result}`, {to: 'ar', autoCorrect: true});
+        m.reply(`${hasill22_result.text}`.trim());
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const searchString2 = ' Indonesia ';
+        const replacementString2 = ' español ';
+        const rres = await fetch(`https://api.ibeng.tech/api/others/chatgpt?q=Hola&apikey=eMlBNRzUXv`);
+        const jjson = await rres.json();
+        const hahaha = await translate(`${jjson.data}`, {to: 'ar', autoCorrect: true});
+        const sextS = hahaha.text;
+        const replacedText = sextS.replace(searchString2, replacementString2).trim();
+        m.reply(replacedText);
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const akuariapi2 = await fetch(`https://api.akuari.my.id/ai/gpt?chat=${text}`);
+        const akuariapijson2 = await akuariapi2.json();
+        if (akuariapijson2.respon == 'error' || akuariapijson2.respon == '' || !akuariapijson2.respon) return XD; // causar error undefined para lanzar msg de error
+        const akuariapiresult2 = await translate(`${akuariapijson2.respon}`, {to: 'ar', autoCorrect: true});
+        m.reply(akuariapiresult2.text.trim());
+    } catch {
+      try {
+        conn.sendPresenceUpdate('composing', m.chat);
+        const akuariapi1 = await fetch(`https://api.akuari.my.id/ai/gbard?chat=${text}`);
+        const akuariapijson1 = await akuariapi1.json();
+        if (akuariapijson1.respon == 'error' || akuariapijson1.respon == '' || !akuariapijson1.respon) return XD; // causar error undefined para usar otra api
+        const akuariapiresult1 = await translate(`${akuariapijson1.respon}`, {to: 'ar', autoCorrect: true});
+        m.reply(`${akuariapiresult1.text}`.trim());
+    } catch {
+        throw `*[❗] خطأ*`;
+     }}
+    }}
+   }}
+  }}
+ }}
 };
-
-/** ************************/
-global.cheerio = cheerio;
-global.fs = fs;
-global.fetch = fetch;
-global.axios = axios;
-global.moment = moment;
-global.rpg = {
-  emoticon(string) {
-    string = string.toLowerCase();
-    const emot = {
-      level: '🧬 Nivel',
-      limit: '💎 Diamante',
-      exp: '⚡ Experiencia',
-      bank: '🏦 Banco',
-      diamond: '💎 Diamante',
-      health: '❤️ Salud',
-      kyubi: '🌀 Magia',
-      joincount: '🪙 Token',
-      emerald: '💚 Esmeralda',
-      stamina: '✨ Energía',
-      role: '💪 Rango',
-      premium: '🎟️ Premium',
-      pointxp: '📧 Puntos Exp',
-      gold: '👑 Oro',
-      trash: '🗑 Basura',
-      crystal: '🔮 Cristal',
-      intelligence: '🧠 Inteligencia',
-      string: '🕸️ Cuerda',
-      keygold: '🔑 Llave de Oro',
-      keyiron: '🗝️ Llave de Hierro',
-      emas: '🪅 Piñata',
-      fishingrod: '🎣 Caña de Pescar',
-      gems: '🍀 Gemas',
-      magicwand: '⚕️ Varita Mágica',
-      mana: '🪄 Hechizo',
-      agility: '🤸‍♂️ Agilidad',
-      darkcrystal: '♠️ Cristal Oscuro',
-      iron: '⛓️ Hierro',
-      rock: '🪨 Roca',
-      potion: '🥤 Poción',
-      superior: '💼 Superior',
-      robo: '🚔 Robo',
-      upgrader: '🧰 Aumentar Mejora',
-      wood: '🪵 Madera',
-      strength: '🦹‍ ♀️ Fuerza',
-      arc: '🏹 Arco',
-      armor: '🥼 Armadura',
-      bow: '🏹 Super Arco',
-      pickaxe: '⛏️ Pico',
-      sword: '⚔️ Espada',
-      common: '📦 Caja Común',
-      uncoommon: '🥡 Caja Poco Común',
-      mythic: '🗳️ Caja Mítico',
-      legendary: '🎁 Caja Legendaria',
-      petFood: '🍖 Alimento para Mascota',
-      pet: '🍱 Caja para Mascota',
-      bibitanggur: '🍇 Semilla de Uva',
-      bibitapel: '🍎 Semilla de Manzana',
-      bibitjeruk: '🍊 Semillas de naranja',
-      bibitmangga: '🥭 Semilla de Mango',
-      bibitpisang: '🍌 Semillas de Plátano',
-      ayam: '🐓 Pollo',
-      babi: '🐖 Puerco',
-      Jabali: '🐗 Jabali',
-      bull: '🐃 Toro',
-      buaya: '🐊 Cocodrilo',
-      cat: '🐈 Gato',
-      centaur: '🐐 Centauro',
-      chicken: '🐓 Pollo',
-      cow: '🐄 Vaca',
-      dog: '🐕 Perro',
-      dragon: '🐉 Dragón',
-      elephant: '🐘 Elefante',
-      fox: '🦊 Zorro',
-      giraffe: '🦒 Jirafa',
-      griffin: '🦅 Ave',
-      horse: '🐎 Caballo',
-      kambing: '🐐 Cabra',
-      kerbau: '🐃 Búfalo',
-      lion: '🦁 León',
-      money: '👾 MysticCoins',
-      monyet: '🐒 Mono',
-      panda: '🐼 Panda',
-      snake: '🐍 Serpiente',
-      phonix: '🕊️ Fénix',
-      rhinoceros: '🦏 Rinoceronte',
-      wolf: '🐺 Lobo',
-      tiger: '🐅 Tigre',
-      cumi: '🦑 Calamar',
-      udang: '🦐 Camarón',
-      ikan: '🐟 Pez',
-      fideos: '🍝 Fideos',
-      ramuan: '🧪 Ingrediente NOVA',
-      knife: '🔪 Cuchillo',
-    };
-    const results = Object.keys(emot).map((v) => [v, new RegExp(v, 'gi')]).filter((v) => v[1].test(string));
-    if (!results.length) return '';
-    else return emot[results[0][0]];
-  }};
-global.rpgg = { // Solo emojis
-  emoticon(string) {
-    string = string.toLowerCase();
-    const emott = {
-      level: '🧬',
-      limit: '💎',
-      exp: '⚡',
-      bank: '🏦',
-      diamond: '💎+',
-      health: '❤️',
-      kyubi: '🌀',
-      joincount: '🪙',
-      emerald: '💚',
-      stamina: '✨',
-      role: '💪',
-      premium: '🎟️',
-      pointxp: '📧',
-      gold: '👑',
-      trash: '🗑',
-      crystal: '🔮',
-      intelligence: '🧠',
-      string: '🕸️',
-      keygold: '🔑',
-      keyiron: '🗝️',
-      emas: '🪅',
-      fishingrod: '🎣',
-      gems: '🍀',
-      magicwand: '⚕️',
-      mana: '🪄',
-      agility: '🤸‍♂️',
-      darkcrystal: '♠️',
-      iron: '⛓️',
-      rock: '🪨',
-      potion: '🥤',
-      superior: '💼',
-      robo: '🚔',
-      upgrader: '🧰',
-      wood: '🪵',
-      strength: '🦹‍ ♀️',
-      arc: '🏹',
-      armor: '🥼',
-      bow: '🏹',
-      pickaxe: '⛏️',
-      sword: '⚔️',
-      common: '📦',
-      uncoommon: '🥡',
-      mythic: '🗳️',
-      legendary: '🎁',
-      petFood: '🍖',
-      pet: '🍱',
-      bibitanggur: '🍇',
-      bibitapel: '🍎',
-      bibitjeruk: '🍊',
-      bibitmangga: '🥭',
-      bibitpisang: '🍌',
-      ayam: '🐓',
-      babi: '🐖',
-      Jabali: '🐗',
-      bull: '🐃',
-      buaya: '🐊',
-      cat: '🐈',
-      centaur: '🐐',
-      chicken: '🐓',
-      cow: '🐄',
-      dog: '🐕',
-      dragon: '🐉',
-      elephant: '🐘',
-      fox: '🦊',
-      giraffe: '🦒',
-      griffin: '🦅',
-      horse: '🐎',
-      kambing: '🐐',
-      kerbau: '🐃',
-      lion: '🦁',
-      money: '👾',
-      monyet: '🐒',
-      panda: '🐼',
-      snake: '🐍',
-      phonix: '🕊️',
-      rhinoceros: '🦏',
-      wolf: '🐺',
-      tiger: '🐅',
-      cumi: '🦑',
-      udang: '🦐',
-      ikan: '🐟',
-      fideos: '🍝',
-      ramuan: '🧪',
-      knife: '🔪',
-    };
-    const results = Object.keys(emott).map((v) => [v, new RegExp(v, 'gi')]).filter((v) => v[1].test(string));
-    if (!results.length) return '';
-    else return emott[results[0][0]];
-  }};
-global.rpgshop = { // Tienda
-  emoticon(string) {
-    string = string.toLowerCase();
-    const emottt = {
-      exp: '⚡ Experiencia',
-      limit: '💎 Diamante',
-      diamond: '💎 Diamante',
-      joincount: '🪙 Token',
-      emerald: '💚 Esmeralda',
-      berlian: '♦️ Joya',
-      kyubi: '🌀 Magia',
-      gold: '👑 Oro',
-      money: '👾 MysticCoins',
-      tiketcoin: '🎫 mystic Tickers',
-      stamina: '✨ Energía',
-      potion: '🥤 Poción',
-      aqua: '💧 Agua',
-      trash: '🗑 Basura',
-      wood: '🪵 Madera',
-      rock: '🪨 Roca',
-      batu: '🥌 Piedra',
-      string: '🕸️ Cuerda',
-      iron: '⛓️ Hierro',
-      coal: '⚱️ Carbón',
-      botol: '🍶 Botella',
-      kaleng: '🥫 Lata',
-      kardus: '🪧 Cartón',
-      eleksirb: '💡 Electricidad',
-      emasbatang: '〽️ Barra de Oro',
-      emasbiasa: '🧭 Oro Común',
-      rubah: '🦊🌫️ Zorro Grande',
-      sampah: '🗑🌫️ Super Basura',
-      serigala: '🐺🌫️ Super Lobo',
-      kayu: '🛷 Super Madera',
-      sword: '⚔️ Espada',
-      umpan: '🪱 Carnada',
-      healtmonster: '💵 Billetes',
-      emas: '🪅 Piñata',
-      pancingan: '🪝 Gancho',
-      pancing: '🎣 Caña de Pescar',
-      common: '📦 Caja Común',
-      uncoommon: '🥡 Caja Poco Común',
-      mythic: '🗳️ Caja Mítica',
-      pet: '📫 Caja de Mascotas', // ?
-      gardenboxs: '💐 Caja de Jardinería', // ?
-      legendary: '🎁 Caja Legendaria',
-      anggur: '🍇 Uva',
-      apel: '🍎 Manzana',
-      jeruk: '🍊 Naranja',
-      mangga: '🥭 Mango',
-      pisang: '🍌 Platano',
-      bibitanggur: '🌾🍇 Semillas de uva',
-      bibitapel: '🌾🍎 Semillas de manzana',
-      bibitjeruk: '🌾🍊 Semillas de naranja',
-      bibitmangga: '🌾🥭 Semillas de Mango',
-      bibitpisang: '🌾🍌 Semillas de plátano',
-      centaur: '🐐 Centauro',
-      griffin: '🦅 Ave',
-      kucing: '🐈 Gato',
-      naga: '🐉 Dragón',
-      fox: '🦊 Zorro',
-      kuda: '🐎 Caballo',
-      phonix: '🕊️ Fénix',
-      wolf: '🐺 Lobo',
-      anjing: '🐶 Perro',
-      petFood: '🍖 Alimento para Mascota', // ?
-      makanancentaur: '🐐🥩 Comida de Centauro',
-      makanangriffin: '🦅🥩 Comida de Ave',
-      makanankyubi: '🌀🥩 Comida Mágica',
-      makanannaga: '🐉🥩 Comida de Dragón',
-      makananpet: '🍱🥩 Alimentos de mascotas',
-      makananphonix: '🕊️🥩 Comida de Fénix',
-    };
-    const results = Object.keys(emottt).map((v) => [v, new RegExp(v, 'gi')]).filter((v) => v[1].test(string));
-    if (!results.length) return '';
-    else return emottt[results[0][0]];
-  }};
-global.rpgshopp = { // Tienda
-  emoticon(string) {
-    string = string.toLowerCase();
-    const emotttt = {
-      exp: '⚡',
-      limit: '💎',
-      diamond: '💎+',
-      joincount: '🪙',
-      emerald: '💚',
-      berlian: '♦️',
-      kyubi: '🌀',
-      gold: '👑',
-      money: '👾',
-      tiketcoin: '🎫',
-      stamina: '✨',
-      potion: '🥤',
-      aqua: '💧',
-      trash: '🗑',
-      wood: '🪵',
-      rock: '🪨',
-      batu: '🥌',
-      string: '🕸️',
-      iron: '⛓️',
-      coal: '⚱️',
-      botol: '🍶',
-      kaleng: '🥫',
-      kardus: '🪧',
-      eleksirb: '💡',
-      emasbatang: '〽️',
-      emasbiasa: '🧭',
-      rubah: '🦊🌫️',
-      sampah: '🗑🌫️',
-      serigala: '🐺🌫️',
-      kayu: '🛷',
-      sword: '⚔️',
-      umpan: '🪱',
-      healtmonster: '💵',
-      emas: '🪅',
-      pancingan: '🪝',
-      pancing: '🎣',
-      common: '📦',
-      uncoommon: '🥡',
-      mythic: '🗳️',
-      pet: '📫', // ?
-      gardenboxs: '💐', // ?
-      legendary: '🎁',
-      anggur: '🍇',
-      apel: '🍎',
-      jeruk: '🍊',
-      mangga: '🥭',
-      pisang: '🍌',
-      bibitanggur: '🌾🍇',
-      bibitapel: '🌾🍎',
-      bibitjeruk: '🌾🍊',
-      bibitmangga: '🌾🥭',
-      bibitpisang: '🌾🍌',
-      centaur: '🐐',
-      griffin: '🦅',
-      kucing: '🐈',
-      naga: '🐉',
-      fox: '🦊',
-      kuda: '🐎',
-      phonix: '🕊️',
-      wolf: '🐺',
-      anjing: '🐶',
-      petFood: '🍖', // ?
-      makanancentaur: '🐐🥩',
-      makanangriffin: '🦅🥩',
-      makanankyubi: '🌀🥩',
-      makanannaga: '🐉🥩',
-      makananpet: '🍱🥩',
-      makananphonix: '🕊️🥩',
-    };
-    const results = Object.keys(emotttt).map((v) => [v, new RegExp(v, 'gi')]).filter((v) => v[1].test(string));
-    if (!results.length) return '';
-    else return emotttt[results[0][0]];
-  }};
-
-const file = fileURLToPath(import.meta.url);
-watchFile(file, () => {
-  unwatchFile(file);
-  console.log(chalk.redBright('Update \'api.js\''));
-  import(`${file}?update=${Date.now()}`);
-});
+handler.command = /^(شعبوط)$/i;
+export default handler;
