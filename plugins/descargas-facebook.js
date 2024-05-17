@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 let enviando = false;
 const handler = async (m, {conn, args, command, usedPrefix}) => {
   const idioma = global.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
   const tradutor = _translate.plugins.descargas_facebook
   if (!args[0]) throw `_*${tradutor.texto1[0]}*_\n\n*${tradutor.texto1[1]}*\n\n*${tradutor.texto1[2]}* _${usedPrefix + command} https://fb.watch/fOTpgn6UFQ/_`;
   const linkface = await isValidFacebookLink(args[0])  
@@ -27,7 +27,7 @@ const handler = async (m, {conn, args, command, usedPrefix}) => {
       throw `_*${tradutor.texto5}*`;
   }
 };
-handler.command = /^(facebook|fb|facebookdl|fbdl|facebook2|fb2|facebookdl2|fbdl2|facebook3|fb3|facebookdl3|fbdl3|facebook4|fb4|facebookdl4|fbdl4|facebook5|fb5|facebookdl5|fbdl5)$/i;
+handler.command = /^(facebook|fb|فيسبوك|fbdl|facebook2|fb2|فيس|fbdl2|facebook3|fb3|facebookdl3|fbdl3|facebook4|fb4|facebookdl4|fbdl4|facebook5|fb5|facebookdl5|fbdl5)$/i;
 export default handler;
 
 async function isValidFacebookLink(link) {
