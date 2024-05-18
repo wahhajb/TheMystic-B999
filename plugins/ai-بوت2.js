@@ -1,35 +1,25 @@
- import fetch from 'node-fetch';
-import axios from 'axios';
-import translate from '@vitalets/google-translate-api';
+import fetch from 'node-fetch';
 import { Configuration, OpenAIApi } from 'openai';
 
 const configuration = new Configuration({ organization: global.openai_org_id, apiKey: global.openai_key });
 const openai = new OpenAIApi(configuration);
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (usedPrefix == 'a' || usedPrefix == 'A') return;
+    if (usedPrefix === 'a' || usedPrefix === 'A') return;
     if (!text) throw `مرحبًا! أنا بوت الصاعقة🌩️ يمكنني مساعدتك إذا كان لديك أي أسئلة أو استفسارات. ماذا تحتاج؟`;
 
     try {
         conn.sendPresenceUpdate('composing', m.chat);
-        let respuesta;
+        const respuesta = await getOpenAIChatCompletion(text);
 
-        // Your OpenAI interaction
-        respuesta = await getOpenAIChatCompletion(text);
+        if (!respuesta) throw 'error';
 
-        if (respuesta == 'error' || respuesta == '' || !respuesta) {
-            // Try another AI API or handle the error
-        } else {
-            m.reply(`${respuesta}`.trim());
-            return;
-        }
+        m.reply(`${respuesta}`.trim());
     } catch {
-        // Handle error
+        // Handle error or try another API
+        // For example:
+        // m.reply('عذرًا، لم أتمكن من الرد على هذا الاستفسار في الوقت الحالي.');
     }
-
-    // If OpenAI fails or throws an error, try other APIs or services
-    // ...
-
 };
 
 const getOpenAIChatCompletion = async (text) => {
