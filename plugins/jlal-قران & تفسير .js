@@ -1,162 +1,66 @@
-import cheerio from 'cheerio';
-import fetch from 'node-fetch';
+ import fetch from 'node-fetch';
+import translate from '@vitalets/google-translate-api';
 
-let handler = async (m, {
-    conn,
-    args,
-    usedPrefix,
-    text,
-    command
-}) => {
+let quranSurahHandler = async (m, { conn }) => {
+  try {
+    // استخراج رقم السورة أو اسمها من نص الأمر.
+    let surahInput = m.text.split(' ')[1];
 
-    let lister = [
-        "list",
-        "surah",
-        "tafsir"
-    ]
-
-    let [feature, inputs, inputs_, inputs__, inputs___] = text.split(" ")
-    if (!lister.includes(feature)) return m.reply("*Example:*\n.nu search vpn\n\n*Pilih type yg ada*\n" + lister.map((v, index) => "  ○ " + v).join("\n"))
-
-    if (lister.includes(feature)) {
-
-        if (feature == "list") {
-            await m.reply(wait)
-            try {
-                let res = await surahList()
-                let teks = res.surahList.map((item, index) => {
-                    return `🔍 *[ RESULT ${index + 1} ]*
-
-📚 Name: ${item.name}
-🔗 Link: ${item.link}
-📝 No: ${item.number}
-  `
-                }).filter(v => v).join("\n\n________________________\n\n")
-                await m.reply(teks)
-            } catch (e) {
-                await m.reply(eror)
-            }
-        }
-
-        if (feature == "surah") {
-            if (!inputs) return m.reply("Input query link\nExample: .nu surah 5\nList: .nu list")
-            await m.reply(wait)
-            try {
-                let res = await surahList()
-                let data = await surahAyah(res.surahList[parseInt(inputs) + 1].link)
-                let teks = data.map((item, index) => {
-                    return `🔍 *[ RESULT ${index + 1} ]*
-
-📖 Arab: ${item.quranTitle}
-🌐 Latin: ${item.quranLatin}
-🌍 Translate: ${item.quranTranslate}
-🔗 Link: ${item.url}
-`
-                }).filter(v => v).join("\n\n________________________\n\n")
-                await m.reply(teks)
-            } catch (e) {
-                await m.reply(eror)
-            }
-        }
-        
-        if (feature == "tafsir") {
-            if (!inputs) return m.reply("Input query link\nExample: .nu 2 5\nList: .nu list")
-            if (!inputs_) return m.reply("Input query link\nExample: .nu 2 5\nList: .nu list")
-            await m.reply(wait)
-            try {
-                let res = await surahList()
-                let data = await surahAyah(res.surahList[parseInt(inputs) + 1].link)
-                let item = await surahTafsir(data[parseInt(inputs_) + 1].url)
-                let teks = `🔍 *[ RESULT ]*
-
-📖 Tafsir Tahlili: ${item.firstText}
-📘 Tafsir Wajiz: ${item.secondText}
-`
-                await m.reply(teks)
-
-            } catch (e) {
-                await m.reply(eror)
-            }
-        }
-        
-        
+    if (!surahInput) {
+      throw new Error(`يرجى تحديد رقم السورة أو اسمها`);
     }
-}
-handler.help = ["nu"]
-handler.tags = ["internet"]
-handler.command = /^(آية|coran)$/i
-export default handler
 
-/* New Line */
+    let surahListRes = await fetch('https://quran-endpoint.vercel.app/quran');
+    let surahList = await surahListRes.json();
 
-// Fungsi untuk memeriksa apakah format input adalah nomor
-function isNumberFormat(input) {
-    return /^\d+$/.test(input);
-}
+    let surahData = surahList.data.find(surah => 
+        surah.number === Number(surahInput) || 
+        surah.asma.ar.short.toLowerCase() === surahInput.toLowerCase() || 
+        surah.asma.en.short.toLowerCase() === surahInput.toLowerCase()
+    );
 
-async function surahList() {
-  try {
-  	const url = 'https://quran.nu.or.id/al-fatihah'; // Ganti dengan URL yang sesuai
-    const response = await fetch(url);
-    const html = await response.text();
+    if (!surahData) {
+      throw new Error(`لم يتم العثور على السورة بالرقم أو الاسم "${surahInput}"`);
+    }
 
-    const $ = cheerio.load(html);
+    let res = await fetch(`https://quran-endpoint.vercel.app/quran/${surahData.number}`);
+    
+    if (!res.ok) {
+      let error = await res.json(); 
+      throw new Error(`فشلت الطلب مع الرمز الاستجابة ${res.status} والرسالة ${error.message}`);
+    }
 
-    const surahList = $('.flex.justify-center .mr-1 select option').map((index, element) => ({
-      name: $(element).val().split('/')[1],
-      number: $(element).text().trim().split('.')[0],
-      link: 'https://quran.nu.or.id' + $(element).val(),
-    })).get();
+    let json = await res.json();
 
-    const ayahList = $('#ayah-select option').map((index, element) => $(element).val()).get();
+    // ترجمة التفسير من البهاسا الإندونيسية إلى الأردية
+    let translatedTafsirUrdu = await translate(json.data.tafsir, { to: 'ur', autoCorrect: true });
 
-    return { surahList, ayahList };
+    // ترجمة التفسير من البهاسا الإندونيسية إلى الإنجليزية
+    let translatedTafsirEnglish = await translate(json.data.tafsir, { to: 'en', autoCorrect: true });
+
+    let quranSurah = `
+🕌 *القرآن: الكتاب المقدس*\n
+📖 *سورة ${json.data.number}: ${json.data.asma.ar.long} (${json.data.asma.en.long})*\n
+النوع: ${json.data.type.en}\n
+عدد الآيات: ${json.data.ayahCount}\n
+📚 *التفسير (بالأردية):*\n
+${translatedTafsirUrdu.text}\n
+📚 *التفسير (بالإنجليزية):*\n
+${translatedTafsirEnglish.text}`;
+
+    m.reply(quranSurah);
+
+    if (json.data.recitation.full) {
+      conn.sendFile(m.chat, json.data.recitation.full, 'recitation.mp3', null, m, true, { type: 'audioMessage', ptt: true });
+    }
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error(error);
+    m.reply(`خطأ: ${error.message}`);
   }
 };
 
-async function surahAyah(query){
-  try {
-  const url = query; // Ganti dengan URL yang sesuai
-    const response = await fetch(url);
-    const html = await response.text();
+quranSurahHandler.help = ['quran [رقم_السورة|اسم_السورة]'];
+quranSurahHandler.tags = ['quran', 'surah'];
+quranSurahHandler.command = ['السورة'];
 
-    const $ = cheerio.load(html);
-
-    const data = [];
-
-    $('div[id^="ayah"]').each((index, element) => {
-      const url = 'https://quran.nu.or.id' + $(element).find('a[href^="/"]').attr('href');
-      const tafsir = $(element).find('a[href^="/"]').next().text().trim();
-      const quranTitle = $(element).find('.text-right.font-omar.text-3xl').text().trim();
-      const quranLatin = $(element).find('.font-omar.text-2xl').text().trim();
-      const quranTranslate = $(element).find('.font-inter').text().trim();
-
-      data.push({ url, tafsir, quranTitle, quranLatin, quranTranslate });
-    });
-
-    return data;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
-
-async function surahTafsir(url) {
-  try {
-    const response = await fetch(url);
-    const html = await response.text();
-
-    const $ = cheerio.load(html);
-
-    const firstText = $('#first').find('p.font-inter').text().trim();
-    const secondText = $('#second').find('p.font-inter').text().trim();
-
-    return { firstText, secondText };
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
+export default quranSurahHandler;
