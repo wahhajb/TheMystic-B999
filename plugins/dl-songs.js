@@ -62,35 +62,36 @@ const handler = async (m, {conn, command, args, text, usedPrefix}) => {
         }
       }
     }
-    if (command ==  play4  || command ==  playdoc2 ) {
-  try {
-    const qu =  360 ;
-    const q = qu +  p ;
-    const v = yt_play[0].url;
-    const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
-    const dl_url = await yt.video[q].download();
-    const ttl = await yt.title;
-    const size = await yt.video[q].fileSizeH;
-    await await conn.sendMessage(m.chat, {video: {url: dl_url}, caption: `${tradutor.texto4[0]} ${ttl}\n${tradutor.texto4[1]} ${size}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m});
-  } catch {
-    try {
-      const mediaa = await ytMp4(yt_play[0].url);
-      await await conn.sendMessage(m.chat, {video: {url: dl_url}, caption: cap}, {quoted: m});
-    } catch {
+    if (command == 'play4' || command == 'playdoc2') {
       try {
-        const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytvideo2?apikey=${lolkeysapi}&url=${yt_play[0].url}`);
-        const lolh = await lolhuman.json();
-        const n = lolh.result.title ||  error ;
-        const n2 = lolh.result.link;
-        const n3 = lolh.result.size;
-        const n4 = lolh.result.thumbnail;
-        await conn.sendMessage(m.chat, {video: {url: n2}, caption: `${tradutor.texto4[0]} ${n}\n${tradutor.texto4[1]} ${n3}`, thumbnail: await fetch(n4)}, {quoted: m});
+        const qu = '360';
+        const q = qu + 'p';
+        const v = yt_play[0].url;
+        const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
+        const dl_url = await yt.video[q].download();
+        const ttl = await yt.title;
+        const size = await yt.video[q].fileSizeH;
+        await await conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `${tradutor.texto4[0]} ${ttl}\n${tradutor.texto4[1]} ${size}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m});
       } catch {
-        await conn.reply(m.chat, `${tradutor.texto5}`, m);
+        try {
+          const mediaa = await ytMp4(yt_play[0].url);
+          await await conn.sendMessage(m.chat, {document: {url: dl_url}, caption: cap, mimetype: 'video/mp4', fileName: ttl + `.mp4`}, {quoted: m});
+        } catch {
+          try {
+            const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytvideo2?apikey=${lolkeysapi}&url=${yt_play[0].url}`);
+            const lolh = await lolhuman.json();
+            const n = lolh.result.title || 'error';
+            const n2 = lolh.result.link;
+            const n3 = lolh.result.size;
+            const n4 = lolh.result.thumbnail;
+            await conn.sendMessage(m.chat, {document: {url: n2}, fileName: `${n}.mp4`, mimetype: 'video/mp4', caption: `${tradutor.texto4[0]} ${n}\n${tradutor.texto4[1]} ${n3}`, thumbnail: await fetch(n4)}, {quoted: m});
+          } catch {
+            await conn.reply(m.chat, `${tradutor.texto5}`, m);
+          }
+        }
       }
     }
-  }
-}catch {
+  } catch {
     throw `${tradutor.texto6}}`;
   }
 };
