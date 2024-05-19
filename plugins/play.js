@@ -1,12 +1,23 @@
- import fs from 'fs';
+import fs from 'fs';
 import fetch from 'node-fetch';
 import { youtubeSearch } from '@bochilteam/scraper';
 
 let handler = async (m, { conn, command, text, usedPrefix }) => {
     if (!text) throw `*[❗𝐈𝐍𝐅𝐎❗] 𝙽𝙾𝙼𝙱𝚁𝙴 𝙳𝙴 𝙻𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽 𝙵𝙰𝙻𝚃𝙰𝙽𝚃𝙴, 𝙿𝙾𝚁 𝙵𝙰𝚅𝙾𝚁 𝙸𝙽𝙶𝚁𝙴𝚂𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙼𝙰𝚂 𝙴𝙻 𝙽𝙾𝙼𝙱𝚁𝙴/𝚃𝙸𝚃𝚄𝙻𝙾 𝙳𝙴 𝚄𝙽𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽*\n\n*—◉ 𝙴𝙹𝙴𝙼𝙿𝙻𝙾:*\n*${usedPrefix + command} Good Feeling - Flo Rida*`;
     try {
-        let vid = (await youtubeSearch(text)).video[0];
+        let results = await youtubeSearch(text);
+        if (!results || !results.video || results.video.length === 0) {
+            throw new Error('No video results found');
+        }
+
+        let vid = results.video[0];
+        if (!vid) throw new Error('No video details available');
+
         let { title, description, thumbnail, videoId, durationH, viewH, publishedTime } = vid;
+        if (!title || !description || !thumbnail || !videoId || !durationH || !viewH || !publishedTime) {
+            throw new Error('Incomplete video details');
+        }
+
         const url = 'https://www.youtube.com/watch?v=' + videoId;
         let caption = `📌 *𝚃𝙸𝚃𝚄𝙻𝙾:* ${title}
 📇 *𝙳𝙴𝚂𝙲𝚁𝙸𝙿𝙲𝙸𝙾𝙽:* ${description}
@@ -14,10 +25,12 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
 ⌚ *𝙳𝚄𝚁𝙰𝙲𝙸𝙾𝙽:* ${durationH}
 👀 *𝚅𝙸𝚂𝚃𝙰𝚂:* ${viewH}
 🔗 *𝚄𝚁𝙻:* ${url}`.trim();
+
         let buttons = [
             { buttonId: `${usedPrefix}getaud ${url}`, buttonText: { displayText: '𝐀𝐔𝐃𝐈𝐎' }, type: 1 },
             { buttonId: `${usedPrefix}getvid ${url}`, buttonText: { displayText: '𝐕𝐈𝐃𝐄𝐎' }, type: 1 }
         ];
+
         let buttonMessage = {
             image: await fetch(thumbnail).then(res => res.buffer()),
             caption: caption,
@@ -38,6 +51,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
                 }
             }
         };
+
         conn.sendMessage(m.chat, buttonMessage, { quoted: m });
     } catch (e) {
         console.error(e);
