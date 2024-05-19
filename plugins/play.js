@@ -1,4 +1,4 @@
-import fs from 'fs';
+ import fs from 'fs';
 import fetch from 'node-fetch';
 import { youtubeSearch } from '@bochilteam/scraper';
 
@@ -39,8 +39,9 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
             }
         };
         conn.sendMessage(m.chat, buttonMessage, { quoted: m });
-    } catch {
-        m.reply('*[❗𝐈𝐍𝐅𝐎❗] 𝙴𝚁𝚁𝙾𝚁, 𝙿𝙾𝚁 𝙵𝙰𝚅𝙾𝚁 𝚅𝚄𝙴𝙻𝚅𝙰 𝙰 𝙸𝙽𝚃𝙴𝙽𝚃𝙰𝚁𝙻𝙾*');
+    } catch (e) {
+        console.error(e);
+        m.reply(`*[❗𝐈𝐍𝐅𝐎❗] 𝙴𝚁𝚁𝙾𝚁: ${e.message}*`);
     }
 };
 
