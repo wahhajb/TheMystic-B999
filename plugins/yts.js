@@ -47,7 +47,7 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
                   header: video.title,
                   title: video.author.name,
                   description: 'للتحميل مقطع فيديو MP4',
-                  id: `${prefijo}فيد ${video.url}`
+                  id: `${prefijo}فيديو ${video.url}`
                 }
               ]
             }))
@@ -89,5 +89,5 @@ const handler = async (m, { conn, text, usedPrefix: prefijo }) => {
 };
 handler.help = ['ytsearch <texto>'];
 handler.tags = ['search'];
-handler.command = /^(بحث|yts|searchyt|buscaryt|videosearch|audiosearch)$/i;
+handler.command = /^(بحث|yts|searchyt|تشغيل|تحميل|تنزيل)$/i;
 export default handler;
