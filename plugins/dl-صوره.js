@@ -1,4 +1,4 @@
-import { googleImage } from '@bochilteam/scraper';
+ import { googleImage } from '@bochilteam/scraper';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!text) throw `*[❗خطاء❗] مثال على الأمر ${usedPrefix + command} أحمد طرزان*`;
@@ -23,6 +23,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         };
 
         await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+        console.log(`تم إرسال الأزرار للمستخدم مع نتائج البحث عن: ${text}`);
     } catch (e) {
         console.error(e);
         m.reply('حدث خطأ أثناء البحث عن الصور.');
@@ -35,13 +36,21 @@ handler.command = /^(صورة|image|صوره|imagen)$/i;
 
 export default handler;
 
+// التعامل مع زر الضغط
 conn.ev.on('messages.upsert', async (chatUpdate) => {
     const message = chatUpdate.messages[0];
     if (!message.message) return;
     if (message.key.fromMe) return;
-    const { text } = message.message.conversation || '';
-    if (text.startsWith('sendimage')) {
-        const imageUrl = text.split(' ')[1];
-        await conn.sendFile(message.key.remoteJid, imageUrl, 'image.jpg', `🔗 *من:* ${imageUrl}`, message);
+
+    const buttonMessage = message.message.buttonsResponseMessage?.selectedButtonId || '';
+    if (buttonMessage.startsWith('sendimage')) {
+        const imageUrl = buttonMessage.split(' ')[1];
+        try {
+            await conn.sendFile(message.key.remoteJid, imageUrl, 'image.jpg', `🔗 *من:* ${imageUrl}`, message);
+            console.log(`تم إرسال الصورة: ${imageUrl}`);
+        } catch (e) {
+            console.error(e);
+            await conn.sendMessage(message.key.remoteJid, 'حدث خطأ أثناء إرسال الصورة.', message);
+        }
     }
 });
