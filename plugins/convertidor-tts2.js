@@ -1,5 +1,5 @@
-import axios from 'axios';
-import fetch from 'node-fetch';
+import axios from  axios ;
+import fetch from  node-fetch ;
 
 const handler = async (m, { conn, usedPrefix, command, text, args }) => {
   const datas = global
@@ -7,9 +7,8 @@ const handler = async (m, { conn, usedPrefix, command, text, args }) => {
   const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
   const tradutor = _translate.plugins.convertidor_tts2
 
-
   const [efecto, ...textoArray] = text.split(" ");
-  const texto = textoArray.join("");
+  const texto = textoArray.join(" ");
 
   if (!efecto) {
     let voiceList = await getVoiceList();
@@ -40,23 +39,23 @@ const handler = async (m, { conn, usedPrefix, command, text, args }) => {
   if (!texto) return conn.sendMessage(m.chat, {text: `*${tradutor.texto4[0]}*\n*◉ ${usedPrefix + command} ${efecto} ${tradutor.texto4[1]}*`}, {quoted: m});
 
   let masivo = await makeTTSRequest(texto, efecto);
-  conn.sendMessage(m.chat, {audio: {url: masivo.resultado}, fileName: 'error.mp3', mimetype: 'audio/mpeg', ptt: true}, {quoted: m});
+  conn.sendMessage(m.chat, {audio: {url: masivo.resultado}, fileName:  error.mp3 , mimetype:  audio/mpeg , ptt: true}, {quoted: m});
 };
 
 handler.command = /^(g?tts2)$/i;
 export default handler;
 
-const secretKey = 'fe2ee40099494579af0ecf871b5af266';
-const userId = 'SrgwcKcLzSY63IdsAxd1PzscFjL2';
+const secretKey =  fe2ee40099494579af0ecf871b5af266 ;
+const userId =  SrgwcKcLzSY63IdsAxd1PzscFjL2 ;
 
 async function getVoiceList() {
-  const url = 'https://play.ht/api/v2/voices';
+  const url =  https://play.ht/api/v2/voices ;
   const options = {
-    method: 'GET',
+    method:  GET ,
     headers: {
-      accept: 'application/json',
+      accept:  application/json ,
       AUTHORIZATION: `Bearer ${secretKey}`,
-      'X-USER-ID': userId
+       X-USER-ID : userId
     }
   };
   try {
@@ -75,7 +74,7 @@ async function getVoiceList() {
     }));
     return { resultado: simplifiedList ? simplifiedList : `${tradutor.texto5}` };
   } catch (error) {
-    console.error('Error:', error);
+    console.error( Error: , error);
     return { resultado: `${tradutor.texto6}` };
     throw error;
   }
@@ -85,23 +84,23 @@ async function makeTTSRequest(texto, efecto) {
   const requestData = {
     text: texto,
     voice: efecto,
-    language: 'ar' // تحديد اللغة المصدرية إلى اللغة العربية
+    language:  ar  // تحديد اللغة المصدرية إلى اللغة العربية
   };
   const headers = {
-    'Authorization': `Bearer ${secretKey}`,
-    'X-User-Id': userId,
-    'accept': 'text/event-stream',
-    'content-type': 'application/json'
+     Authorization : `Bearer ${secretKey}`,
+     X-User-Id : userId,
+     accept :  text/event-stream ,
+     content-type :  application/json 
   };
   try {
-    const response = await axios.post('https://play.ht/api/v2/tts', requestData, { headers });
-    const events = response.data.split('\r\n\r\n');
-    const eventData = events.find(event => event.includes('"stage":"complete"'));
+    const response = await axios.post( https://play.ht/api/v2/tts , requestData, { headers });
+    const events = response.data.split( \r\n\r\n );
+    const eventData = events.find(event => event.includes( "stage":"complete" ));
     const urlMatch = eventData.match(/"url":"([^"]+)"/);
     const url = urlMatch ? urlMatch[1] : null;
     return { resultado: url ? url : `${tradutor.texto7}` };
   } catch (error) {
-    console.error('Error:', error);
-    return { resultado: '[❗] Error, no se obtuvo respuesta de la API.' };
+    console.error( Error: , error);
+    return { resultado:  [❗] Error, no se obtuvo respuesta de la API.  };
   }
 }
