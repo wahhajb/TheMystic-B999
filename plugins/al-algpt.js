@@ -64,7 +64,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
 // تعريف الأوامر والمساعدة
 handler.help = ["gpt <السؤال>"];
 handler.tags = ["ذكاء اصطناعي"];
-handler.command = /^(gpt|بوت|ai)$/i;
+handler.command = /^(gpt|شعبوط|ai)$/i;
 handler.limit = null;
 handler.register = false;
 
