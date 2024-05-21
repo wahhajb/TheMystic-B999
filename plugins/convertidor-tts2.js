@@ -13,16 +13,16 @@
 
 import axios from 'axios';
 import fetch from 'node-fetch';
+import { readFileSync } from 'fs';
 
 const handler = async (m, { conn, usedPrefix, command, text, args }) => {
-  const datas = global
-  const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
-  const tradutor = _translate.plugins.convertidor_tts2
-
+  const datas = global;
+  const idioma = datas.db.data.users[m.sender].language;
+  const _translate = JSON.parse(readFileSync(`./language/ar.json`));
+  const tradutor = _translate.plugins.convertidor_tts2;
 
   const [efecto, ...textoArray] = text.split(" ");
-  const texto = textoArray.join("");
+  const texto = textoArray.join(" ");
 
   if (!efecto) {
     let voiceList = await getVoiceList();
@@ -48,12 +48,16 @@ const handler = async (m, { conn, usedPrefix, command, text, args }) => {
     }
   }
 
-  if (!efectoValido) return conn.sendMessage(m.chat, { text: `*${tradutor.texto3[0]} ${usedPrefix + command} ${tradutor.texto3[1]}*` }, { quoted: m });
+  if (!efectoValido) {
+    return conn.sendMessage(m.chat, { text: `*${tradutor.texto3[0]} ${usedPrefix + command} ${tradutor.texto3[1]}*` }, { quoted: m });
+  }
 
-  if (!texto) return conn.sendMessage(m.chat, {text: `*${tradutor.texto4[0]}*\n*◉ ${usedPrefix + command} ${efecto} ${tradutor.texto4[1]}*`}, {quoted: m});
+  if (!texto) {
+    return conn.sendMessage(m.chat, { text: `*${tradutor.texto4[0]}*\n*◉ ${usedPrefix + command} ${efecto} ${tradutor.texto4[1]}*` }, { quoted: m });
+  }
 
   let masivo = await makeTTSRequest(texto, efecto);
-  conn.sendMessage(m.chat, {audio: {url: masivo.resultado}, fileName: 'error.mp3', mimetype: 'audio/mpeg', ptt: true}, {quoted: m});
+  conn.sendMessage(m.chat, { audio: { url: masivo.resultado }, fileName: 'tts.mp3', mimetype: 'audio/mpeg', ptt: true }, { quoted: m });
 };
 
 handler.command = /^(g?tts2)$/i;
@@ -74,7 +78,7 @@ async function getVoiceList() {
   };
   try {
     const response = await fetch(url, options);
-    const responseData = await response.json(); 
+    const responseData = await response.json();
     const uniqueData = responseData.reduce((acc, current) => {
       if (!acc.some(item => item.id === current.id)) {
         acc.push(current);
@@ -84,18 +88,17 @@ async function getVoiceList() {
     const simplifiedList = uniqueData.map(entry => ({
       ID: entry.id,
       name: entry.name,
-      lenguaje: entry.language  
+      lenguaje: entry.language
     }));
-    return { resultado: simplifiedList ? simplifiedList : `${tradutor.texto5}` };
+    return { resultado: simplifiedList.length ? simplifiedList : `${tradutor.texto5}` };
   } catch (error) {
     console.error('Error:', error);
     return { resultado: `${tradutor.texto6}` };
-    throw error;
   }
 }
 
 async function makeTTSRequest(texto, efecto) {
-  const requestData = {text: texto, voice: efecto};
+  const requestData = { text: texto, voice: efecto };
   const headers = {
     'Authorization': `Bearer ${secretKey}`,
     'X-User-Id': userId,
