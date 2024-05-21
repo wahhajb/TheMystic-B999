@@ -81,7 +81,7 @@ global.loadDatabase = async function loadDatabase() {
 };
 loadDatabase();
 
-/* Creditos a Otosaka (https://wa.me/967736615673) */
+/* Creditos a Otosaka (https://wa.me/51993966345) */
 
 global.chatgpt = new Low(new JSONFile(path.join(__dirname, '/db/chatgpt.json')));
 global.loadChatgptDB = async function loadChatgptDB() {
@@ -112,7 +112,7 @@ global.authFile = `MysticSession`;
 const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile);
 const msgRetryCounterMap = (MessageRetryMap) => { };
 const msgRetryCounterCache = new NodeCache()
-const {version} = await fetchLatestBaileysVersion();
+//const {version} = await fetchLatestBaileysVersion();
 let phoneNumber = global.botnumber
 
 const methodCodeQR = process.argv.includes("qr")
@@ -143,7 +143,7 @@ const connectionOptions = {
 logger: pino({ level: 'silent' }),
 printQRInTerminal: opcion == '1' ? true : methodCodeQR ? true : false,
 mobile: MethodMobile, 
-browser: opcion == '1' ? ['jlal', 'Safari', '2.0.0'] : methodCodeQR ? ['TheMystic-Bot-MD', 'Safari', '2.0.0'] : ['Ubuntu', 'Chrome', '20.0.04'],
+browser: opcion == '1' ? ['TheMystic-Bot-MD', 'Safari', '2.0.0'] : methodCodeQR ? ['TheMystic-Bot-MD', 'Safari', '2.0.0'] : ['Ubuntu', 'Chrome', '20.0.04'],
 auth: {
 creds: state.creds,
 keys: makeCacheableSignalKeyStore(state.keys, Pino({ level: "fatal" }).child({ level: "fatal" })),
@@ -158,7 +158,7 @@ return msg?.message || ""
 msgRetryCounterCache,
 msgRetryCounterMap,
 defaultQueryTimeoutMs: undefined,   
-version
+version: [2, 2413, 1]
 }
 
 global.conn = makeWASocket(connectionOptions);
