@@ -18,7 +18,9 @@ export async function before(m, {conn, isAdmin, isBotAdmin}) {
   const isGroupLink = linkRegex.exec(m.text);
   const grupo = `https://chat.whatsapp.com`;
   
-  if (isAdmin && chat.antiLink && m.text.includes(grupo)) return m.reply("*𝐇𝐄𝐘!! 𝐄𝐋 𝐀𝐍𝐓𝐈𝐋𝐈𝐍𝐊 𝐄𝐒𝐓𝐀 𝐀𝐂𝐓𝐈𝐕𝐎, 𝐏𝐄𝐑𝐎 𝐄𝐑𝐄𝐒 𝐔𝐍 𝐀𝐃𝐌𝐈𝐍 😎, 𝐒𝐀𝐋𝐕𝐀𝐃𝐎/𝐀!*");
+  if (isAdmin && chat.antiLink && m.text.includes(grupo)) {
+    return m.reply("🚫✨ تنبيه: نظام الحماية ضد الروابط مفعّل، لكنك مشرف في الجروب 😎. لقد تم إنقاذك! ✨🚫");
+  }
   
   if (chat.antiLink && isGroupLink && !isAdmin) {
     if (isBotAdmin) {
@@ -26,11 +28,13 @@ export async function before(m, {conn, isAdmin, isBotAdmin}) {
       if (m.text.includes(linkThisGroup)) return !0;
     }
     await this.sendMessage(m.chat, {
-      text: "*「 𝐀𝐍𝐓𝐈 𝐋𝐈𝐍𝐊𝐒 」*\n*𝐇𝐀𝐒𝐓𝐀 𝐋𝐀 𝐕𝐈𝐒𝐓𝐀 𝐁𝐀𝐁𝐘 👋 " + user + " 𝐑𝐎𝐌𝐏𝐈𝐒𝐓𝐄𝐒 𝐋𝐀𝐒 𝐑𝐄𝐆𝐋𝐀𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎, 𝐒𝐄𝐑𝐀𝐒 𝐄𝐗𝐓𝐄𝐑𝐌𝐈𝐍𝐀𝐃𝐎...!!*",
+      text: "🚨「 🔗 نظام حماية الروابط 」🚨\nقمنقلع برى الجروب🏌️‍♂️ " + user + "، لقد اخترقت قواعد المجموعة، سيتم طردك فورًا! 💼🚀",
       mentions: [m.sender]
     }, {quoted: m});
     
-    if (!isBotAdmin) return m.reply("*[❗𝐈𝐍𝐅𝐎❗] 𝐄𝐋 𝐁𝐎𝐓 𝐍𝐎 𝐄𝐒 𝐀𝐃𝐌𝐈𝐍, 𝐍𝐎 𝐏𝐔𝐄𝐃𝐄 𝐄𝐗𝐓𝐄𝐑𝐌𝐈𝐍𝐀𝐑 𝐀 𝐋𝐀𝐒 𝐏𝐄𝐑𝐒𝐎𝐍𝐀𝐒*");
+    if (!isBotAdmin) {
+      return m.reply("⚠️ [❗معلومة❗] البوت ليس مشرفا، لذلك لا يمكنه طرد الأشخاص. ⚠️");
+    }
     
     if (isBotAdmin && bot.restrict) {
       await conn.sendMessage(m.chat, {
@@ -38,7 +42,9 @@ export async function before(m, {conn, isAdmin, isBotAdmin}) {
       });
       const responseb = await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
       if (responseb[0].status === 404) return;
-    } else if (!bot.restrict) return m.reply("*[❗𝐈𝐍𝐅𝐎❗] 𝐄𝐋 𝐏𝐑𝐎𝐏𝐈𝐄𝐓𝐀𝐑𝐈𝐎 𝐃𝐄𝐋 𝐁𝐎𝐓 𝐍𝐎 𝐓𝐈𝐄𝐍𝐄 𝐇𝐀𝐁𝐈𝐋𝐈𝐓𝐀𝐃𝐎 𝐋𝐀𝐒 𝐑𝐄𝐒𝐓𝐑𝐈𝐂𝐂𝐈𝐎𝐍𝐄𝐒 (#𝐞𝐧𝐚𝐛𝐥𝐞 𝐫𝐞𝐬𝐭𝐫𝐢𝐜𝐭) 𝐂𝐎𝐍 𝐄𝐋 𝐏𝐀𝐑𝐀 𝐐𝐔𝐄 𝐋𝐎 𝐇𝐀𝐁𝐈𝐋𝐈𝐓𝐄*");
+    } else if (!bot.restrict) {
+      return m.reply("⚠️ [❗معلومة❗] مالك البوت لم يقم بتمكين القيود (#enable restrict) لتمكينها. ⚠️");
+    }
   }
   return !0;
 }
