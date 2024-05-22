@@ -1,6 +1,5 @@
 // TheMystic-Bot-MD@BrunoSobrino - _antilink.js
 
-  
 const linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})/i;
 
 export async function before(m, {conn, isAdmin, isBotAdmin}) {
@@ -36,15 +35,11 @@ export async function before(m, {conn, isAdmin, isBotAdmin}) {
       return m.reply("⚠️ [❗معلومة❗] البوت ليس مشرفا، لذلك لا يمكنه طرد الأشخاص. ⚠️");
     }
     
-    if (isBotAdmin && bot.restrict) {
-      await conn.sendMessage(m.chat, {
-        delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }
-      });
-      const responseb = await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
-      if (responseb[0].status === 404) return;
-    } else if (!bot.restrict) {
-      return m.reply("⚠️ [❗معلومة❗] مالك البوت لم يقم بتمكين القيود (#enable restrict) لتمكينها. ⚠️");
-    }
+    await conn.sendMessage(m.chat, {
+      delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }
+    });
+    const responseb = await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
+    if (responseb[0].status === 404) return;
   }
   return !0;
 }
