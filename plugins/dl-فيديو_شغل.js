@@ -17,9 +17,9 @@ const handler = async (m, {conn, command, args, text, usedPrefix}) => {
   try {
     const yt_play = await search(args.join(' '));
     let additionalText = '';
-    if (command === 'play3' || command == 'شغل') {
+    if (command === 'play' || command == 'شغل') {
       additionalText = 'audio 🔊';
-    } else if (command === 'play4' || command == 'فيديو') {
+    } else if (command === 'play2' || command == 'فيديو') {
       additionalText = 'video 🎥';
     }
     const texto1 = `${tradutor.texto2[0]}\n
@@ -34,7 +34,7 @@ const handler = async (m, {conn, command, args, text, usedPrefix}) => {
     ${tradutor.texto2[9]} ${yt_play[0].url}\n
     ${tradutor.texto2[10]} ${additionalText}, ${tradutor.texto2[11]}`.trim();
     conn.sendMessage(m.chat, {image: {url: yt_play[0].thumbnail}, caption: texto1}, {quoted: m});
-    if (command == 'play3' || command == 'شغل') {
+    if (command == 'play' || command == 'شغل') {
       try {
         const q = '128kbps';
         const v = yt_play[0].url;
@@ -62,7 +62,7 @@ const handler = async (m, {conn, command, args, text, usedPrefix}) => {
         }
       }
     }
-    if (command == 'play4' || command == 'فيديو') {
+    if (command == 'play2' || command == 'فيديو') {
       try {
         const qu = '360';
         const q = qu + 'p';
@@ -95,9 +95,9 @@ const handler = async (m, {conn, command, args, text, usedPrefix}) => {
     throw `${tradutor.texto6}}`;
   }
 };
-handler.help = ['play3', 'play4'].map((v) => v + ' < busqueda >');
+handler.help = ['play', 'play2'].map((v) => v + ' < busqueda >');
 handler.tags = ['downloader'];
-handler.command = /^(شغل|فيديو|play3|play4)$/i;
+handler.command = /^(شغل|فيديو|play|play2)$/i;
 export default handler;
 
 async function search(query, options = {}) {
