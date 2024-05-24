@@ -1,4 +1,3 @@
-
 import ytdl from 'ytdl-core';
 import yts from 'yt-search';
 import fs from 'fs';
@@ -13,14 +12,13 @@ var handler = async (m, { conn, command, text, usedPrefix }) => {
 
   let search = await yts(text);
   let vid = search.videos[Math.floor(Math.random() * search.videos.length)];
-  if (!search) throw 'Video Not Found, Try Another Title';
+  if (!search) throw "Video Not Found, Try Another Title";
   let { title, thumbnail, timestamp, views, ago, url } = vid;
-  let wm = ' 💝 بوت الصاعقة💝';
+  let wm = "💝 BOBIZA BOT💝";
 
-  let captvid = `💝 شعبوط bot جاري التحميل ♥`;
+  let captvid = "💝 Bobiza bot جاري التحميل ♥";
 
   conn.sendMessage(m.chat, { image: { url: thumbnail }, caption: captvid, footer: author }, { quoted: m });
-
 
   const audioStream = ytdl(url, {
     filter: 'audioonly',
@@ -69,7 +67,7 @@ var handler = async (m, { conn, command, text, usedPrefix }) => {
 
 handler.help = ['play'].map((v) => v + ' <query>');
 handler.tags = ['downloader'];
-handler.command = ['mp3', 'song', 'ytmp3doc']
+handler.command = ['mp3', 'songs', 'ytmp3doc'];
 
 handler.exp = 0;
 handler.diamond = false;
