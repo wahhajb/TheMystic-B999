@@ -5,6 +5,7 @@ import axios from 'axios';
 import {youtubedl, youtubedlv2} from '@bochilteam/scraper';
 const handler = async (m, {conn, command, args, text, usedPrefix}) => {
   if (!text) throw `*[❗𝐈𝐍𝐅𝐎❗] 𝙽𝙾𝙼𝙱𝚁𝙴 𝙳𝙴 𝙻𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽 𝙵𝙰𝙻𝚃𝙰𝙽𝚃𝙴, 𝙿𝙾𝚁 𝙵𝙰𝚅𝙾𝚁 𝙸𝙽𝙶𝚁𝙴𝚂𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙼𝙰𝚂 𝙴𝙻 𝙽𝙾𝙼𝙱𝚁𝙴/𝚃𝙸𝚃𝚄𝙻𝙾 𝙳𝙴 𝚄𝙽𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽*\n\n*—◉ 𝙴𝙹𝙴𝙼𝙿𝙻𝙾:*\n*${usedPrefix + command} Good Feeling - Flo Rida* `;
+await m.reply("> اﻻنتظار من فضلك...⏳") 
   try {
     const yt_play = await search(args.join(' '));
     let additionalText = '';
@@ -13,6 +14,7 @@ const handler = async (m, {conn, command, args, text, usedPrefix}) => {
     } else if (command === 'play4' || command == 'playdoc2') {
       additionalText = 'video 🎥';
     }
+    const message = "جاري تحميل طلبك...";
 conn.sendMessage(m.chat, message, { quoted: m });
     if (command == 'play3' || command == 'playdoc') {
       try {
@@ -79,6 +81,7 @@ handler.help = ['play3', 'play4'].map((v) => v + ' < busqueda >');
 handler.tags = ['downloader'];
 handler.command = /^(playdoc|playdoc2|play3|play4)$/i;
 export default handler;
+
 async function search(query, options = {}) {
   const search = await yts.search({query, hl: 'es', gl: 'ES', ...options});
   return search.videos;
