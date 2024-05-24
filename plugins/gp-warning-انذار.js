@@ -1,62 +1,45 @@
 
-const handler = async (m, {conn, text, command, usedPrefix}) => {
-  const datas = global
-  const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
-  const tradutor = _translate.plugins.gc_warn
+let war = global.maxwarn
+let handler = async (m, { conn, text, args, groupMetadata, usedPrefix, command }) => {      
+        let who
+        if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : false
+        else who = m.chat
+        if (!who) throw `❒ منشن شخص ما\n\n❍ مثال : ${usedPrefix + command} @الشخص`
+        if (!(who in global.db.data.users)) throw `❒ المستخدم غير موجود في قاعدة البيانات الخاصة بي`
+        let name = conn.getName(m.sender)
+        let warn = global.db.data.users[who].warn
+        if (warn < war) {
+            global.db.data.users[who].warn += 1
+            m.reply(`
+⚠️ *تحذير المستخدم* ⚠️
 
-  if (m.mentionedJid.includes(conn.user.jid)) return;
-  const pp = './src/warn.jpg';
-  let who;
-  if (m.isGroup) {
-    who = m.mentionedJid[0] ?
-      m.mentionedJid[0] :
-      m.quoted ?
-      m.quoted.sender :
-      text;
-  } else who = m.chat;
-  const user = global.db.data.users[who];
-  const bot = global.db.data.settings[conn.user.jid] || {};
-  const dReason = 'Sin motivo';
-  const msgtext = text || dReason;
-  const sdms = msgtext.replace(/@\d+-?\d* /g, '');
-  const warntext = `${tradutor.texto1}\n*${
-    usedPrefix + command
-  } @${global.suittag}*`;
-  if (!who) {
-    throw m.reply(warntext, m.chat, {mentions: conn.parseMention(warntext)});
-  }
-  user.warn += 1;
-  await m.reply(
-      `${
-      user.warn == 1 ? `*@${who.split`@`[0]}*` : `*@${who.split`@`[0]}*`
-      } ${tradutor.texto2[0]} ${sdms}\n${tradutor.texto2[1]} ${
-        user.warn
-      }/3*`,
-      null,
-      {mentions: [who]},
-  );
-  if (user.warn >= 3) {
-    if (!bot.restrict) {
-      return m.reply(
-          `${tradutor.texto3[0]} (#𝚎𝚗𝚊𝚋𝚕𝚎 𝚛𝚎𝚜𝚝𝚛𝚒𝚌𝚝) ${tradutor.texto3[1]}`,
-      );
-    }
-    user.warn = 0;
-    await m.reply(
-        `${tradutor.texto4[0]}\n*@${
-          who.split`@`[0]
-        }* ${tradutor.texto4[1]}`,
-        null,
-        {mentions: [who]},
-    );
-    await conn.groupParticipantsUpdate(m.chat, [who], 'remove');
-  }
-  return !1;
-};
+❒ *المشرف:* ${name}
+❒ *مستخدم:* @${who.split`@`[0]}
+❒ *الانذارات:* ${warn + 1}/${war}
+❒ *السبب:* ${text}`, null, { mentions: [who] }) 
+            m.reply(`
+⚠️ *تحذير* ⚠️
+لقد تلقيت تحذيرًا من المشرف
 
-handler.command = /^(انذار|تحذير|warn|warning)$/i;
-handler.group = true;
-handler.admin = true;
-handler.botAdmin = true;
-export default handler;
+❒ *الانذارات:* ${warn + 1}/${war} 
+اذا تلقيت *${war}* تحذيرات سيتم إزالتك تلقائيًا من المجموعة`, who)
+        } else if (warn == war) {
+            global.db.data.users[who].warn = 0
+            m.reply(`❍ تجاوز المستخدم ال *${war}* من التحذيرات لذلك سيتم إزالة الشخص`)
+            await time(3000)
+            await conn.groupParticipantsUpdate(m.chat, [who], 'remove')
+            m.reply(`❍ لقد تم ازالتك من الجروب *${groupMetadata.subject}* لان تم تحذيرك *${war}* مره`, who)
+        }
+}
+handler.help = ['warn @user']
+handler.tags = ['group']
+handler.command = ['انذار'] 
+handler.group = true
+handler.admin = true
+handler.botAdmin = true
+
+export default handler
+
+const time = async (ms) => {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
