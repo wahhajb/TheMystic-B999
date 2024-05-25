@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require( node-fetch );
 
 let handler = async (m, {
   conn,
@@ -6,15 +6,14 @@ let handler = async (m, {
   usedPrefix,
   command
 }) => {
-  if (command == 'مساعد') {
-    if (!text) throw `مثال : ${usedPrefix + command} من هو اول دخل مكة 
- ؟`;
+  if (command ==  bing ) {
+    if (!text) throw `Example : ${usedPrefix + command} siapa presiden Indonesia?`;
     try {
-      m.reply('انتظر...')
-      let response = await fetch('https://api.betabotz.eu.org/api/search/bing-chat', {
-          method: 'POST',
+      m.reply(wait)
+      let response = await fetch( https://api.betabotz.eu.org/api/search/bing-chat , {
+          method:  POST ,
           headers: {
-            'Content-Type': 'application/json',
+             Content-Type :  application/json ,
           },
           body: JSON.stringify({
             text: text,
@@ -26,17 +25,17 @@ let handler = async (m, {
       await conn.reply(m.chat, response.message, m);
     } catch (e) {
       console.log(e);
-      throw `*خطأ:* ${خطأ}`;
+      throw `*Error:* ${eror}`;
     }
   }
-  if (command == 'تخيل') {
-    if (!text) throw `مثال: ${usedPrefix + command} طفل يجري مرتدياً ملابس حمراء رسوم متحركة ثلاثية الأبعاد`;
+  if (command ==  bingimg ) {
+    if (!text) throw `Contoh: ${usedPrefix + command} anak berlari menggunakan pakaian merah 3d animation`;
     try {
-      m.reply('انتظر...')
-      let response = await fetch('https://api.betabotz.eu.org/api/search/bing-img', {
-          method: 'POST',
+      m.reply(wait)
+      let response = await fetch( https://api.betabotz.eu.org/api/search/bing-img , {
+          method:  POST ,
           headers: {
-            'Content-Type': 'application/json',
+             Content-Type :  application/json ,
           },
           body: JSON.stringify({
             text: text,
@@ -48,16 +47,16 @@ let handler = async (m, {
       for (let i = 0; i < 4; i++) {
         let img = response.result[i]
         await sleep(3000)
-        await conn.sendFile(m.chat, img, 'bing_img.png', `*النص:* ${text}`, m)
+        await conn.sendFile(m.chat, img,  bing_img.png , `*PROMPT:* ${text}`, m)
       }
     } catch (error) {
-      throw `خطأ: ${خطأ}`
+      throw `Error: ${eror}`
     }
   }
 }
 
-handler.command = handler.help = ['مساعد', 'تخيل']
-handler.tags = ['مساعد']
+handler.command = handler.help = [ bing ,  bingimg ]
+handler.tags = [ drawing ]
 handler.limit = true
 
 module.exports = handler
