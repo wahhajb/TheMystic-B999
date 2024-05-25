@@ -7,7 +7,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     } else if (m.quoted && m.quoted.text) {
         text = m.quoted.text;
     } else {
-        return m.reply("أدخل النص!");
+        return m.reply("اكتب نص!");
     }
     await m.reply(wait);
     try {
