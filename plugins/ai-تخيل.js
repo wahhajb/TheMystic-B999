@@ -49,7 +49,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 };
 
-handler.command = handler.help = ['bing', 'bingimg'];
+handler.command = ['bing', 'bingimg'];
 handler.tags = ['drawing'];
 handler.limit = true;
 
