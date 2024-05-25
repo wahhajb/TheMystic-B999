@@ -55,7 +55,7 @@ let handler = async (m, {
   }
 }
 
-handler.command = handler.help = [ bing ,  bingimg ]
+handler.command = handler.help = [ 'bing' , 'bingimg' ]
 handler.tags = [ drawing ]
 handler.limit = true
 
