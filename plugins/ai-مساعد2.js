@@ -35,5 +35,5 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 
 handler.help = ["diffusionxl"];
 handler.tags = ["ai"];
-handler.command = /^diffusionxl$/i;
+handler.command = /^مساعد2$/i;
 export default handler;
