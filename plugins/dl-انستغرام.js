@@ -10,16 +10,19 @@ async function handler(m, { conn, args, text, usedPrefix, command }) {
       throw `⛔ المستخدم ليس لديه أي منشور في حسابه على Instagram`;
     }
 
+    // التحقق من أن res.username معرف قبل محاولة استبدال أي جزء منه
+    let username = res.username ? res.username.replace(/^@/, '') : 'unknown';
+
     let te = `
 ┐────【 *المعلومات* 】 ────┌
 ⇠ *🔖 الاسم:* ${res.name} 
-⇠ *🔖 المعرف:* ${res.username}
+⇠ *🔖 المعرف:* ${username}
 ⇠ *👥 المتابعين:* ${res.followersH}
 ⇠ *🫂 الذي يتابعهم:* ${res.followingH}
 ⇠ *📌 البايو:* ${res.description}
 ⇠ *🏝️ المنشورات:* ${res.postsH}
 
-⇠ *🔗 الرابط* : https://instagram.com/${res.username.replace(/^@/, '')}
+⇠ *🔗 الرابط* : https://instagram.com/${username}
 ┘─────【 ﮼♪ﺑوﺕ|الصاعـ|ـقة⁞¹² 】─────└`;
 
     await conn.sendFile(m.chat, res.profilePic, 'tt.png', te, m);
