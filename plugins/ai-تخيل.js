@@ -1,8 +1,8 @@
- import fetch from 'node-fetch';
+import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (command === 'bing') {
-    if (!text) throw `Example: ${usedPrefix + command} siapa presiden Indonesia?`;
+    if (!text) throw `Example : ${usedPrefix + command} siapa presiden Indonesia?`;
     try {
       m.reply('wait');
       let response = await fetch('https://api.betabotz.eu.org/api/search/bing-chat', {
@@ -19,7 +19,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       await conn.reply(m.chat, response.message, m);
     } catch (e) {
       console.log(e);
-      throw `*Error:* ${e.message}`;
+      throw `*Error:* ${e}`;
     }
   }
   if (command === 'bingimg') {
@@ -44,12 +44,13 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       }
     } catch (error) {
       console.log(error);
-      throw `*Error:* ${error.message}`;
+      throw `*Error:* ${error}`;
     }
   }
-};
-
-handler.command = ['bing', 'bingimg'];
+}
+handler.help = ['bing', 'bingimg'];
+handler.tags = ['drawing'];
+handler.command =['bing', 'bingimg'];
 handler.tags = ['drawing'];
 handler.limit = true;
 
