@@ -6,7 +6,7 @@ import fetch from  node-fetch ;
 const handler = async (m, {conn, args, usedPrefix, command}) => {
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
   const tradutor = _translate.plugins.herramientas_igstalk
 
   if (!args[0]) throw `${tradutor.texto1} ${usedPrefix + command} luisitocomunica*`;
@@ -25,7 +25,7 @@ ${tradutor.texto2[7]}\n${json.bio}`.trim();
   const aa = `${res3.result.photo_profile || res.profile}`;
   await conn.sendFile(m.chat, aa,  error.jpg , iggs, m);
 };
-handler.command = /^(igstalk|انستغرام|انستا2)$/i;
+handler.command = /^(igstalk)$/i;
 export default handler;
 
 async function igstalk(Username) {
