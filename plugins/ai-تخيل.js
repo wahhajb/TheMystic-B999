@@ -1,61 +1,41 @@
-import fetch from 'node-fetch';
+let handler = async (m, { conn, command, usedPrefix, args, text}) => {
+let input = `معك محرك البحث BING ابحث عن اي شيء مثال:\n
+${usedPrefix + command} FACEBOOK`
+	if (!text) return m.reply(input) axios.get('https://www.bing.com/search?q=' + text)
+  .then(response => {
+    const $ = cheerio.load(response.data);
+    const searchResults = [];
+    $('.b_algo').each((index, element) => {
+      const title = $(element).find('h2').text();
+      const url = $(element).find('a').attr('href');
+      const description = $(element).find('.b_caption p').text();
+      searchResults.push({ title, url, description });
+    });
+            let bing = `Bing Search From : ${text}\n\n`;
+            for (let g of searchResults) { 
+              bing += ` *العنوان* : ${g.title}\n`;
+              bing += ` *الوصف* : ${g.description}\n`;
+              bing += ` *الرابط* : ${g.url}\n\n`;
+            }
+  conn.sendMessage(m.chat, {text: bing, contextInfo:
+					{
+	"externalAdReply": {
+							"title": 'BOBIZA BING SEARCHING',
+							"body": '',
+							"showAdAttribution": true,
+							"mediaType": 1,
+							"sourceUrl": '',
+							"thumbnailUrl": 'https://telegra.ph/file/3a22a7e5574face2c6eca.png',
+							"renderLargerThumbnail": true
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (command === 'bing') {
-    if (!text) throw `Example : ${usedPrefix + command} siapa presiden Indonesia?`;
-    try {
-      m.reply('wait');
-      let response = await fetch('https://api.betabotz.eu.org/api/search/bing-chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text,
-          apikey: 'lann'
-        })
-      }).then(res => res.json());
-
-      await conn.reply(m.chat, response.message, m);
-    } catch (e) {
-      console.log(e);
-      throw `*Error:* ${e}`;
-    }
-  }
-  if (command === 'bingimg') {
-    if (!text) throw `Contoh: ${usedPrefix + command} anak berlari menggunakan pakaian merah 3d animation`;
-    try {
-      m.reply('wait');
-      let response = await fetch('https://api.betabotz.eu.org/api/search/bing-img', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text,
-          apikey: 'lann'
-        })
-      }).then(res => res.json());
-
-      for (let i = 0; i < 4; i++) {
-        let img = response.result[i];
-        await sleep(3000);
-        await conn.sendFile(m.chat, img, 'bing_img.png', `*PROMPT:* ${text}`, m);
-      }
-    } catch (error) {
-      console.log(error);
-      throw `*Error:* ${error}`;
-    }
-  }
+						}
+					}}, {quoted: m})
+					}).catch(err => {
+					m.reply('حذث خطأ حاول لاحقا او راسل\ninstagram.com/noureddine_ouafy')
+					})
 }
-handler.help = ['bing', 'bingimg'];
-handler.tags = ['drawing'];
-handler.command =['bing', 'bingimg'];
-handler.tags = ['drawing'];
-handler.limit = true;
-
-export default handler;
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+handler.help = ['bingsearch']
+handler.tags = ['search']
+handler.command = /^محرك$/i
+handler.limit = false
+export default handler
