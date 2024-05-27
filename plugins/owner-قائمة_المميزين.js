@@ -1,8 +1,8 @@
 const handler = async (m, {conn, args, isPrems}) => {
-  const datas = global
-  const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
-  const tradutor = _translate.plugins.info_listprem
+  const datas = global;
+  const idioma = datas.db.data.users[m.sender].language;
+  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`));
+  const tradutor = _translate.plugins.info_listprem;
 
   const usuario = global.db.data.users[m.sender].premiumTime;
   const user = Object.entries(global.db.data.users)
@@ -13,22 +13,21 @@ const handler = async (m, {conn, args, isPrems}) => {
   const premTime = global.db.data.users[m.sender].premiumTime;
   const prem = global.db.data.users[m.sender].premium;
   const userr = await '@' + m.sender.split`@`[0];
-  const waktu = clockString(`${premTime - new Date() * 1} `);
+  const waktu = clockString(`${premTime - new Date() * 1}`, tradutor);
   const sortedP = user.map(toNumber('premiumTime')).sort(sort('premiumTime'));
   const len = args[0] && args[0].length > 0 ? Math.min(100, Math.max(parseInt(args[0]), 10)) : Math.min(10, sortedP.length);
   let infoprem = `
 ${tradutor.texto1[0]}
 
 ${tradutor.texto1[1]} ${userr}
-${prem ? `${tradutor.texto1[2]} ${clockString(usuario - new Date() * 1)}` : (isPrems ? `${tradutor.texto1[3]}` : tradutor.texto1[4])}
+${prem ? `${tradutor.texto1[2]} ${clockString(usuario - new Date() * 1, tradutor)}` : (isPrems ? `${tradutor.texto1[3]}` : tradutor.texto1[4])}
 
 ${tradutor.texto1[5]} ${sortedP.slice(0, len).map(({jid, name, premiumTime, prem, registered}, i) => `
-
 ${tradutor.texto1[6]} ${'@' + jid.split`@`[0]}
-${premiumTime > 0 ? `${tradutor.texto1[7]} ${clockString(premiumTime - new Date() * 1)}` : tradutor.texto1[8]}`).join('')}`.trim();
+${premiumTime > 0 ? `${tradutor.texto1[7]} ${clockString(premiumTime - new Date() * 1, tradutor)}` : tradutor.texto1[8]}`).join('')}`.trim();
 
   if (sortedP.filter((user) => user.premiumTime).length === 0) {
-    infoprem = `${tradutor.texto2[0]} ${userr}\n${prem ? `${tradutor.texto2[1]} ${clockString(usuario - new Date() * 1)}` : tradutor.texto2[2]}\n\n${tradutor.texto2[3]}`.trim();
+    infoprem = `${tradutor.texto2[0]} ${userr}\n${prem ? `${tradutor.texto2[1]} ${clockString(usuario - new Date() * 1, tradutor)}` : tradutor.texto2[2]}\n\n${tradutor.texto2[3]}`.trim();
   }
 
   m.reply(infoprem, null, {mentions: conn.parseMention(infoprem)});
@@ -38,7 +37,7 @@ handler.tags = ['info'];
 handler.command = /^(قائمة_المميزين)$/i;
 export default handler;
 
-function clockString(ms) {
+function clockString(ms, tradutor) {
   const seconds = Math.floor(ms / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
