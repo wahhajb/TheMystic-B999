@@ -1,4 +1,4 @@
-import Presence from '@adiwajshing/baileys'
+import Presence from '@whiskeysockets/baileys'
 let handler  = async (m, { conn, args, text }) => {
 if (!text) throw `*مثال : .تغير-الاسم اكتب اسم الجروب الجديد*`
 try {
