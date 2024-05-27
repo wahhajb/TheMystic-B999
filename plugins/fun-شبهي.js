@@ -15,6 +15,6 @@ mentions: [a, b]
 })}
 handler.help = ['shb']
 handler.tags = ['main', 'fun']
-handler.command = ['شبهي']
+handler.command = ['شبيهي']
 handler.group = true
 export default handler
