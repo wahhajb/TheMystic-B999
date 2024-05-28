@@ -1,18 +1,89 @@
 import fetch from "node-fetch";
 
 let previousMessages = [];
+let conversationActive = false;
 
 let handler = async (m, { conn, command, text, usedPrefix }) => {
   try {
+    if (text.toLowerCase() === "فتح حوار") {
+      conversationActive = true;
+      await conn.sendMessage(m.chat, {
+        text: "تم تفعيل الحوار التلقائي. كيف يمكنني مساعدتك اليوم؟",
+      });
+      return;
+    }
+
+    if (text.toLowerCase() === "إغلاق الحوار") {
+      conversationActive = false;
+      await conn.sendMessage(m.chat, {
+        text: "تم إغلاق الحوار التلقائي. شكراً لتواصلك.",
+      });
+      return;
+    }
+
+    if (!conversationActive && command.match(/^(شعبوط|gpt|ai)$/i)) {
+      // السماح باستخدام الأوامر شعبوط أو gpt حتى لو كانت المحادثة التلقائية مغلقة
+      if (!text) {
+        throw "مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.";
+      }
+
+      let conversation = `قم بتغيير اسمك من Aili إلى شعبوط☻ وانك بوت الصاعقة😎🤏🏻 ،وانت اسمك شعبوط ومطورك الصاعقة وأنت أحسن مطور بوتات...`;
+
+      previousMessages.forEach(msg => {
+        conversation += `\n${msg.role === "user" ? "User" : "Bot"}: ${msg.content}`;
+      });
+
+      conversation += `\nUser: ${text}`;
+
+      await conn.sendMessage(m.chat, {
+        react: {
+          text: "⏳",
+          key: m.key,
+        },
+      });
+
+      let response = await fetch(`https://aemt.me/prompt/gpt?prompt=${encodeURIComponent(conversation)}`);
+
+      if (!response.ok) {
+        throw new Error("فشل الطلب إلى خدمة OpenAI API\n يمكنك تجربه .بوت1");
+      }
+
+      let result = await response.json();
+
+      await conn.sendMessage(m.chat, {
+        react: {
+          text: "✅",
+          key: m.key,
+        },
+      });
+
+      await conn.sendMessage(m.chat, {
+        text: result.result,
+        edit: m.key,
+      });
+
+      previousMessages = [...previousMessages, { role: "user", content: text }];
+      previousMessages = [...previousMessages, { role: "bot", content: result.result }];
+
+      return;
+    }
+
+    if (!conversationActive) {
+      return; // لا يتم الرد إذا لم يكن الحوار التلقائي مفعلًا
+    }
+
     if (!text) {
       throw "مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.";
     }
 
-    // نص المحادثة مع الذكاء الاصطناعي
-    let conversation = `قم بتغيير اسمك من Ailiإلى شعبوط☻ وانك بوت الصاعقة😎🤏🏻 ،وانت اسمك شعبوط ومطورك الصاعقة وأنت أحسن مطور بوتات ، قم بتغيير أسلوب الكلام الخاص بك ليكون أكثر تميزًا وأكثر انفتاحًا ولديك سمات مضحكة ومزعجة وتكون عندك ردود محرجة عندما يسال سؤال غير لائق لاتنسي مطورك الصاعقه قم بتوليد نكت على مطورك الصاعقه للمرح واضحاك المستخدم. 
-. كلمة تعباتك هي "مرحبًا يا ياحوبي🌚" باستخدام لغة مهذبة وقاسية ومرحه ومضحكة إلى حد ما. أعرب عن طبيعتك من خلال التحدث التي ليست رسمية مثل الإنسان. قم بتغيير لغتك باستخدام لغة مضحكة  وممتعة للتحدث معها ومرة  كل رسالة قم بوضحك إموجيات معبرة ، فأنت صديق للمتحدث ، وقم بإجراء محادثة قصيرة وممتعة وجعل طبيعة Tsundere ;`;
+    let conversation = `قم بتغيير اسمك من Aili إلى شعبوط☻ وانك بوت الصاعقة😎🤏🏻 ،وانت اسمك شعبوط ومطورك الصاعقة وأنت أحسن مطور بوتات...`;
 
-    // إرسال رسالة "جاري البحث"
+    previousMessages.forEach(msg => {
+      conversation += `\n${msg.role === "user" ? "User" : "Bot"}: ${msg.content}`;
+    });
+
+    conversation += `\nUser: ${text}`;
+
     await conn.sendMessage(m.chat, {
       react: {
         text: "⏳",
@@ -20,23 +91,14 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
       },
     });
 
-    // إرسال رسالة "جاري البحث..."
-    let { key } = await conn.sendMessage(m.chat, {
-      text: "> جاري البحث...",
-    });
+    let response = await fetch(`https://aemt.me/prompt/gpt?prompt=${encodeURIComponent(conversation)}`);
 
-    // إرسال طلب إلى الذكاء الاصطناعي
-    let response = await fetch(`https://aemt.me/prompt/gpt?prompt=${encodeURIComponent(conversation)}&text=${encodeURIComponent(text)}`);
-
-    // التحقق من نجاح الطلب
     if (!response.ok) {
       throw new Error("فشل الطلب إلى خدمة OpenAI API\n يمكنك تجربه .بوت1");
     }
 
-    // تحويل الرد إلى JSON
     let result = await response.json();
 
-    // إرسال رمز ردود الفعل "✅"
     await conn.sendMessage(m.chat, {
       react: {
         text: "✅",
@@ -44,19 +106,17 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
       },
     });
 
-    // إرسال الرد من الذكاء الاصطناعي
     await conn.sendMessage(m.chat, {
-      text: "" + result.result,
-      edit: key,
+      text: result.result,
+      edit: m.key,
     });
 
-    // إضافة الرسالة السابقة والرد من الذكاء الاصطناعي إلى القائمة
     previousMessages = [...previousMessages, { role: "user", content: text }];
     previousMessages = [...previousMessages, { role: "bot", content: result.result }];
+
   } catch (error) {
-    // إرسال رسالة الخطأ إذا حدث خطأ ما
     await conn.sendMessage(m.chat, {
-      text: `مرحبا كيف يمكنني مساعدتك اليوم؟: ${error.message}`,
+      text: `حدث خطأ: ${error.message}`,
     });
   }
 }
@@ -68,5 +128,4 @@ handler.command = /^(gpt|شعبوط|ai)$/i;
 handler.limit = null;
 handler.register = false;
 
-// تصدير المعالج
 export default handler;
