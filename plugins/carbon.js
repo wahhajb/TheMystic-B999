@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer"
+import fetch from "puppeteer"
 import fetch from "node-fetch"
 import carbon from "carbon-now-scraper"
 import fs from "fs"
