@@ -1,46 +1,19 @@
 import fetch from "node-fetch";
 
-let previousMessages = [];
-let conversationActive = false;
+// متغير لتخزين سلسلة المحادثة
+let conversationHistory = [];
 
 let handler = async (m, { conn, command, text, usedPrefix }) => {
   try {
-    // أوامر لتفعيل وإغلاق المحادثة التلقائية
-    if (text.toLowerCase() === ".فتح حوار") {
-      conversationActive = true;
-      await conn.sendMessage(m.chat, {
-        text: "تم تفعيل الحوار التلقائي. كيف يمكنني مساعدتك اليوم؟",
-      });
-      return;
-    }
-
-    if (text.toLowerCase() === ".إغلاق الحوار") {
-      conversationActive = false;
-      await conn.sendMessage(m.chat, {
-        text: "تم إغلاق الحوار التلقائي. شكراً لتواصلك.",
-      });
-      return;
-    }
-
-    // التحقق من النص المدخل ومعالجة الأوامر
-    if (!conversationActive && !/^(شعبوط|gpt|ai)$/i.test(command)) {
-      return; // لا يتم الرد إذا لم يكن الحوار التلقائي مفعلًا ولم يكن الأمر شعبوط أو gpt أو ai
-    }
-
     if (!text) {
-      throw new Error("مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.");
+      throw "مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.";
     }
 
-    // إعداد نص المحادثة مع الذكاء الاصطناعي
-    let conversation = `قم بتغيير اسمك من Aili إلى شعبوط☻ وانك بوت الصاعقة😎🤏🏻 ،وانت اسمك شعبوط ومطورك الصاعقة وأنت أحسن مطور بوتات...`;
+    // تحديث سلسلة المحادثة بالرسالة الجديدة من المستخدم
+    conversationHistory.push({ role: "user", content: text });
 
-    // إضافة الرسائل السابقة إلى نص المحادثة
-    previousMessages.forEach(msg => {
-      conversation += `\n${msg.role === "user" ? "User" : "Bot"}: ${msg.content}`;
-    });
-
-    // إضافة النص الحالي للمستخدم
-    conversation += `\nUser: ${text}`;
+    // نص المحادثة مع الذكاء الاصطناعي
+    let conversation = conversationHistory.map(msg => `${msg.role === "user" ? "المستخدم" : "شعبوط"}: ${msg.content}`).join("\n");
 
     // إرسال رسالة "جاري البحث"
     await conn.sendMessage(m.chat, {
@@ -50,15 +23,24 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
       },
     });
 
+    // إرسال رسالة "جاري البحث..."
+    let { key } = await conn.sendMessage(m.chat, {
+      text: "> جاري البحث...",
+    });
+
     // إرسال طلب إلى الذكاء الاصطناعي
     let response = await fetch(`https://aemt.me/prompt/gpt?prompt=${encodeURIComponent(conversation)}`);
 
+    // التحقق من نجاح الطلب
     if (!response.ok) {
       throw new Error("فشل الطلب إلى خدمة OpenAI API\n يمكنك تجربه .بوت1");
     }
 
     // تحويل الرد إلى JSON
     let result = await response.json();
+
+    // تحديث سلسلة المحادثة بالرد من الذكاء الاصطناعي
+    conversationHistory.push({ role: "bot", content: result.result });
 
     // إرسال رمز ردود الفعل "✅"
     await conn.sendMessage(m.chat, {
@@ -70,18 +52,13 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
 
     // إرسال الرد من الذكاء الاصطناعي
     await conn.sendMessage(m.chat, {
-      text: result.result,
-      edit: m.key,
+      text: "" + result.result,
+      edit: key,
     });
-
-    // تحديث الرسائل السابقة بإضافة الرسالة الحالية والرد
-    previousMessages = [...previousMessages, { role: "user", content: text }];
-    previousMessages = [...previousMessages, { role: "bot", content: result.result }];
-
   } catch (error) {
     // إرسال رسالة الخطأ إذا حدث خطأ ما
     await conn.sendMessage(m.chat, {
-      text: `حدث خطأ: ${error.message}`,
+      text: `مرحبا كيف يمكنني مساعدتك اليوم؟: ${error.message}`,
     });
   }
 }
@@ -93,4 +70,5 @@ handler.command = /^(gpt|شعبوط|ai)$/i;
 handler.limit = null;
 handler.register = false;
 
+// تصدير المعالج
 export default handler;
