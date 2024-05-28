@@ -1,11 +1,12 @@
 import fetch from "node-fetch";
 
+// متغير لتخزين سلسلة المحادثة
 let previousMessages = [];
 
 let handler = async (m, { conn, command, text, usedPrefix }) => {
   try {
     if (!text) {
-      throw "مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.";
+      throw new Error("مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.");
     }
 
     // تحديث سلسلة المحادثة بالرسالة الجديدة من المستخدم
@@ -36,11 +37,15 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
 
     // التحقق من نجاح الطلب
     if (!response.ok) {
-      throw new Error("فشل الطلب إلى خدمة OpenAI API\n يمكنك تجربه .بوت1");
+      throw new Error("فشل الطلب إلى خدمة OpenAI API. يمكنك تجربة بوت آخر.");
     }
 
     // تحويل الرد إلى JSON
     let result = await response.json();
+
+    if (!result || !result.result) {
+      throw new Error("لم يتم استلام رد صالح من خدمة الذكاء الاصطناعي.");
+    }
 
     // تحديث سلسلة المحادثة بالرد من الذكاء الاصطناعي
     previousMessages.push({ role: "bot", content: result.result });
@@ -62,7 +67,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
   } catch (error) {
     // إرسال رسالة الخطأ إذا حدث خطأ ما
     await conn.sendMessage(m.chat, {
-      text: `مرحبا كيف يمكنني مساعدتك اليوم؟: ${error.message}`,
+      text: `حدث خطأ: ${error.message}`,
     });
   }
 }
