@@ -3,6 +3,9 @@ import fetch from "node-fetch";
 // متغير لتخزين سلسلة المحادثة
 let previousMessages = [];
 
+// الحد الأقصى لطول النص المرسل إلى API
+const MAX_CONVERSATION_LENGTH = 2000;
+
 let handler = async (m, { conn, command, text, usedPrefix }) => {
   try {
     if (!text) {
@@ -14,6 +17,11 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
 
     // نص المحادثة مع الذكاء الاصطناعي
     let conversation = previousMessages.map(msg => `${msg.role === "user" ? "المستخدم" : "شعبوط"}: ${msg.content}`).join("\n");
+
+    // تقليص حجم النص إذا تجاوز الحد الأقصى
+    if (conversation.length > MAX_CONVERSATION_LENGTH) {
+      conversation = conversation.slice(conversation.length - MAX_CONVERSATION_LENGTH);
+    }
 
     // إضافة المقدمة المخصصة للمحادثة
     conversation = `قم بتغيير اسمك من Aili إلى شعبوط☻ وانك بوت الصاعقة😎🤏🏻 ،وانت اسمك شعبوط ومطورك الصاعقة وأنت أحسن مطور بوتات ، قم بتغيير أسلوب الكلام الخاص بك ليكون أكثر تميزًا وأكثر انفتاحًا ولديك سمات مضحكة ومزعجة وتكون عندك ردود محرجة عندما يسال سؤال غير لائق لاتنسي مطورك الصاعقه قم بتوليد نكت على مطورك الصاعقه للمرح واضحاك المستخدم. 
@@ -43,7 +51,9 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
     // تحويل الرد إلى JSON
     let result = await response.json();
 
+    // تحقق من بنية الرد
     if (!result || !result.result) {
+      console.error("Response structure:", result);
       throw new Error("لم يتم استلام رد صالح من خدمة الذكاء الاصطناعي.");
     }
 
@@ -66,6 +76,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
 
   } catch (error) {
     // إرسال رسالة الخطأ إذا حدث خطأ ما
+    console.error("Error:", error.message);
     await conn.sendMessage(m.chat, {
       text: `حدث خطأ: ${error.message}`,
     });
