@@ -1,7 +1,7 @@
-import fetch from "puppeteer"
-import fetch from "node-fetch"
-import carbon from "carbon-now-scraper"
-import fs from "fs"
+import puppeteer from "puppeteer"; // Import puppeteer for headless browser usage
+import fetch from "node-fetch";
+import carbon from "carbon-now-scraper";
+import fs from "fs";
 
 let handler = async (m, {
     conn,
@@ -10,42 +10,44 @@ let handler = async (m, {
     command,
     args
 }) => {
-    let query = "اكتب الكود يا مبرجم 😝 :\n.carbon console.log('bobiza bot is the 1st whatsapp bot in the middle east ')"
-    let text
+    let query = "مثال :\n.خط القدس عاصمة فلسطين";
+    let text;
+
     if (args.length >= 1) {
-        text = args.slice(0).join(" ")
+        text = args.slice(0).join(" ");
     } else if (m.quoted && m.quoted.text) {
-        text = m.quoted.text
-    } else throw query
-    
-    await m.reply(wait)
+        text = m.quoted.text;
+    } else throw query;
+
+    await m.reply(wait);
+
     try {
-        let result = await CarbonifyV1(text)
-        await conn.sendFile(m.chat, result, "", "*V1 by:*\n" + m.name, m)
+        let result = await CarbonifyV1(text);
+        await conn.sendFile(m.chat, result, "", "*V1 by:*\n" + m.name, m);
     } catch (e) {
         try {
-            let result = await CarbonifyV2(text)
-            await conn.sendFile(m.chat, result, "", "*V2 by:*\n" + m.name, m)
+            let result = await CarbonifyV2(text);
+            await conn.sendFile(m.chat, result, "", "*V2 by:*\n" + m.name, m);
         } catch (e) {
             try {
-                let result = await CarbonifyV3(text)
-                await conn.sendFile(m.chat, result, "", "*V3 by:*\n" + m.name, m)
+                let result = await CarbonifyV3(text);
+                await conn.sendFile(m.chat, result, "", "*V3 by:*\n" + m.name, m);
             } catch (e) {
-            try {
-            let result = await CarbonifyV4(text, "./images/auto.png")
-                await conn.sendFile(m.chat, fs.readFileSync("./images/auto.png"), "", "*V4 by:*\n" + m.name, m)
-            } catch (e) {
-                throw eror
+                try {
+                    let result = await CarbonifyV4(text, "./images/auto.png");
+                    await conn.sendFile(m.chat, fs.readFileSync("./images/auto.png"), "", "*V4 by:*\n" + m.name, m);
+                } catch (e) {
+                    throw e;
+                }
             }
         }
     }
- }
-    
-}
-handler.help = ["carbon"]
-handler.tags = ["logo"]
-handler.command = /^carbon?$/i
-export default handler
+};
+
+handler.help = ["carbon"];
+handler.tags = ["misc"];
+handler.command = /^carbon|خط|اكتب(ify)?$/i;
+export default handler;
 
 const config = {
     bg: "rgba(255, 255, 255, 1)",
@@ -85,6 +87,8 @@ async function CarbonifyV1(teks) {
         name: "Carbonify",
         code: teks
     }];
+
+    // Launch headless browser using puppeteer (make sure it s installed)
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setViewport({
@@ -92,6 +96,7 @@ async function CarbonifyV1(teks) {
         height: 800,
         deviceScaleFactor: 2
     });
+
     let index = 1;
     for (const snippet of snippets) {
         console.log(`Carbonifying snippet ${index} of ${snippets.length}`);
@@ -104,7 +109,7 @@ async function CarbonifyV1(teks) {
             content: ".CodeMirror-sizer{min-height: 0!important}"
         });
 
-        const screenshotBuffer = await codeContainer.screenshot({ type: 'png' });
+        const screenshotBuffer = await codeContainer.screenshot({ type:  png  });
         const filename = `./images/${snippet.name.split(".")[0]}.png`;
         fs.writeFileSync(filename, screenshotBuffer);
 
