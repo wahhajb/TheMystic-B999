@@ -6,7 +6,7 @@ let conversationActive = false;
 let handler = async (m, { conn, command, text, usedPrefix }) => {
   try {
     // أوامر لتفعيل وإغلاق المحادثة التلقائية
-    if (text.toLowerCase() === "فتح حوار") {
+    if (text.toLowerCase() === ".فتح حوار") {
       conversationActive = true;
       await conn.sendMessage(m.chat, {
         text: "تم تفعيل الحوار التلقائي. كيف يمكنني مساعدتك اليوم؟",
@@ -14,7 +14,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
       return;
     }
 
-    if (text.toLowerCase() === "إغلاق الحوار") {
+    if (text.toLowerCase() === ".إغلاق الحوار") {
       conversationActive = false;
       await conn.sendMessage(m.chat, {
         text: "تم إغلاق الحوار التلقائي. شكراً لتواصلك.",
@@ -22,13 +22,13 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
       return;
     }
 
-    // استجابة للأوامر عندما تكون المحادثة التلقائية غير مفعلة
-    if (!conversationActive && !command.match(/^(شعبوط|gpt|ai)$/i)) {
+    // التحقق من النص المدخل ومعالجة الأوامر
+    if (!conversationActive && !/^(شعبوط|gpt|ai)$/i.test(command)) {
       return; // لا يتم الرد إذا لم يكن الحوار التلقائي مفعلًا ولم يكن الأمر شعبوط أو gpt أو ai
     }
 
     if (!text) {
-      throw "مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.";
+      throw new Error("مرحبًا، كيف يمكنني مساعدتك اليوم؟ قم بإرسال سؤالك وسأحاول الإجابة عليه.");
     }
 
     // إعداد نص المحادثة مع الذكاء الاصطناعي
