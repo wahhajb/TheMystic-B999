@@ -96,6 +96,7 @@
     "syntax-error": "^1.4.0",
     "terminal-image": "^2.0.0",
     "url-regex-safe": "^3.0.0",
+    "wibusoft":"*",
     "wa-sticker-formatter": "^4.3.2",
     "undici":"*",
     "yargs": "^17.3.1",
