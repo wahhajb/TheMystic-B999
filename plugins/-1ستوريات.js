@@ -1,38 +1,5 @@
 import fetch from 'node-fetch';
 
-let handler = async (m, { conn, command }) => {
-  // التأكد من أن الدردشة تسمح بالمحتوى المناسب
-  if (!db.data.chats[m.chat].modohorny && m.isGroup) throw `${lenguajeGB['smsContAdult']()}`;
-
-  // اختيار عشوائي من قائمة مقاطع الفيديو
-  let url = global.pies[Math.floor(Math.random() * global.pies.length)];
-
-  // إرسال الفيديو إلى الدردشة
-  conn.sendFile(m.chat, url, 'error.mp4', `♥ *استمع للراحة النفسية* ♥\n𝑩𝒀 𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑴𝑶𝑯𝑨𝑴𝑬𝑫\n𝑻𝑯𝑬𝑯𝑬𝑵𝑹𝒀𝑩𝑶𝑻-𝑫`, m);
-  
-  // إرسال زر للمستخدم لاختيار فيديو آخر
-  const buttons = [
-    { buttonId: `/${command}`, buttonText: { displayText: '𝙎𝙄𝙂𝙐𝙄𝙀𝙉𝙏𝙀 | 𝙉𝙀𝙓𝙏 🆕' }, type: 1 }
-  ];
-  
-  const buttonMessage = {
-    contentText: `♥ استمع للراحة النفسية ♥`,
-    footerText: '𝑩𝒀 𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑴𝑶𝑯𝑨𝑴𝑬𝑫',
-    buttons: buttons,
-    headerType: 5
-  };
-  
-  await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
-};
-
-handler.help = ['ستوريات'];
-handler.tags = ['internet'];
-handler.command = /^(ستوريات|ستوري)$/;
-handler.exp = 50;
-handler.level = 0;
-
-export default handler;
-
 // قائمة مقاطع الفيديو
 global.pies = [
   "https://telegra.ph/file/148a362890f69bff3996f.mp4",
@@ -48,3 +15,41 @@ global.pies = [
   "https://telegra.ph/file/d6c4459a35d351996f057.mp4",
   "https://telegra.ph/file/ddd6dd2e5e67f55db079a.mp4"
 ];
+
+// المعالج الرئيسي للأمر
+let handler = async (m, { conn, command }) => {
+  // التحقق من إذن الدردشة
+  if (!db.data.chats[m.chat].modohorny && m.isGroup) throw `${lenguajeGB['smsContAdult']()}`;
+
+  // اختيار عشوائي من قائمة مقاطع الفيديو
+  let url = global.pies[Math.floor(Math.random() * global.pies.length)];
+
+  try {
+    // إرسال الفيديو إلى الدردشة
+    await conn.sendFile(m.chat, url, 'error.mp4', `♥ *استمع* ♥\n𝑩𝒀 𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑴𝑶𝑯𝑨𝑴𝑬𝑫\n𝑻𝑯𝑬𝑯𝑬𝑵𝑹𝒀𝑩𝑶𝑻-𝑫`, m);
+
+    // إرسال زر للمستخدم لاختيار فيديو آخر
+    const buttons = [
+      { buttonId: `/${command}`, buttonText: { displayText: '𝙎𝙄𝙂𝙐𝙄𝙀𝙉𝙏𝙀 | 𝙉𝙀𝙓𝙏 🆕' }, type: 1 }
+    ];
+    const buttonMessage = {
+      contentText: `♥ *استمع* ♥`,
+      footerText: '𝑩𝒀 ',
+      buttons: buttons,
+      headerType: 5
+    };
+
+    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+  } catch (error) {
+    console.error('Error sending video:', error);
+    await conn.sendMessage(m.chat, 'عذراً، حدث خطأ أثناء محاولة إرسال الفيديو.', { quoted: m });
+  }
+};
+
+handler.help = ['ستوريات'];
+handler.tags = ['internet'];
+handler.command = /^(ستوريات|ستوري)$/;
+handler.exp = 50;
+handler.level = 0;
+
+export default handler;
