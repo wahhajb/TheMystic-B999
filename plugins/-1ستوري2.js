@@ -2,21 +2,26 @@ import fetch from 'node-fetch';
 
 let handler = async (m, { conn, command }) => {
   // التأكد من أن الدردشة تسمح بالمحتوى المناسب
-  if (!db.data.chats[m.chat].modohorny && m.isGroup) throw `${lenguajeGB['smsContAdult']()}`;
+  if (!db.data.chats[m.chat].modohorny && m.isGroup) throw `المحتوى غير مسموح به في هذه الدردشة.`;
 
   // اختيار عشوائي من قائمة مقاطع الفيديو
   let url = global.pies[Math.floor(Math.random() * global.pies.length)];
 
+  // التحقق من أن URL صالح
+  if (!url.startsWith('https://telegra.ph/file/')) {
+    throw 'URL غير صالح!';
+  }
+
   // إرسال الفيديو إلى الدردشة
-  conn.sendFile(m.chat, url, 'error.mp4', `♥ *�ﺳﺗورﻳاﺕﻓﺧﻣﻪあ�* ♥\n𝑩𝒀 𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑴𝑶𝑯𝑨𝑴𝑬𝑫\n𝑻𝑯𝑬𝑯𝑬𝑵𝑹𝒀𝑩𝑶𝑻-𝑴𝑫`, m);
+  await conn.sendFile(m.chat, url, 'video.mp4', '', m);
   
-  // إذا كنت تريد إرسال زر للمستخدم لاختيار فيديو آخر، يمكنك إلغاء التعليق على السطر التالي:
-  // conn.sendButton(m.chat, `♥ استمع للراحة النفسية ♥`, author, url, [['𝙎𝙄𝙂𝙐𝙄𝙀𝙉𝙏𝙀 | 𝙉𝙀𝙓𝙏 🆕', `/${command}`]], m);
+  // إرسال زر للمستخدم لاختيار فيديو آخر
+  await conn.sendButton(m.chat, `🌟 تمتع بمشاهدة هذا الفيديو! 🌟`, '', url, [['فيديو آخر | Next 🆕', `/${command}`]], m);
 };
 
-handler.help = ['ستوريات'];
+handler.help = ['حالات'];
 handler.tags = ['internet'];
-handler.command = /^(2ستوريات2|ستوري)$/;
+handler.command = /^(حالة|حالات)$/;
 handler.exp = 50;
 handler.level = 0;
 
