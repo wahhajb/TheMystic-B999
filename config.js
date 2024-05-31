@@ -1,4 +1,4 @@
- import {watchFile, unwatchFile} from 'fs';
+import {watchFile, unwatchFile} from 'fs';
 import chalk from 'chalk';
 import {fileURLToPath} from 'url';
 import fs from 'fs'; 
@@ -25,6 +25,8 @@ global.titulowm = ' ﮼♪ﺑوﺕ|الصاعـ|ـقة⁞¹²';
 global.titulowm2 = `ﺷﻋﺑوﻃ وﺑڛ☻`
 global.igfg = 'شعبوط يحيكم☻';
 global.wait = '> _جاري معالجة طلبك حاول الإنتظار ..._*';
+global.rwait = '⏳';
+global.done = '✅';
 
 global.imagen1 = fs.readFileSync('./Menu2.jpg');
 global.imagen2 = fs.readFileSync('./src/nuevobot.jpg');
