@@ -1,5 +1,5 @@
-import uploadImage from  ../lib/uploadImage.js ;
-import BardAI from  ../lib/bard.js ;
+import uploadImage from '../lib/uploadImage.js';
+import BardAI from '../lib/bard.js';
 
 const bardAi = new BardAI();
 
@@ -16,8 +16,8 @@ let handler = async (message, { conn, args, usedPrefix, command }) => {
   }
 
   let quotedMessage = message.quoted ? message.quoted : message;
-  let mimeType = (quotedMessage.msg || quotedMessage).mimetype ||   ;
-  await message.react( 💬 );
+  let mimeType = (quotedMessage.msg || quotedMessage).mimetype || '';
+  await message.react('💬');
   
   if (!mimeType) {
     try {
@@ -41,7 +41,7 @@ let handler = async (message, { conn, args, usedPrefix, command }) => {
 };
 
 handler.help = ["bard"];
-handler.tags = [ ai ];
+handler.tags = ['ai'];
 handler.command = /^(bard)$/i;
 export default handler;
 
