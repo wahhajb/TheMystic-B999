@@ -8,16 +8,16 @@
 /* [❗]                      [❗]                      [❗] */
 /* -------------------------------------------------------*/
 
-/*import { googleImage } from '@bochilteam/scraper';
+import { googleImage } from '@bochilteam/scraper';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
 
 var handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) throw `خاص بالبحث عن الصور بجودة عالية\n ${usedPrefix}${command} Good Old Days`;
+    if (!text) throw `Use an example ${usedPrefix}${command} Good Old Days`;
 
-    const res = await googleImage("جاري البحث عن الصور. ..");
+    const res = await googleImage(text);
     let images = res;
-    conn.reply(wait)
+    conn.reply("Wait a moment...")
 
     for (let i = 0; i < Math.min(images.length, 8); i++) {
         let randomIndex = Math.floor(Math.random() * images.length); // Random Image
@@ -52,7 +52,7 @@ var handler = async (m, { conn, text, usedPrefix, command }) => {
 }
 
 handler.help = ['gimage < query >', 'image < query >'];
-handler.tags = ['search'];
+handler.tags = ['internet'];
 handler.command = /^(gimage|image|googleimage|googleimg|gimg)$/i;
 
-export default handler;*/
+export default handler;
