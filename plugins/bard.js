@@ -3,29 +3,38 @@ import BardAI from '../lib/bard.js';
 
 const bardAi = new BardAI();
 
-let handler = async (message, { conn, args, usedPrefix, command }) => {
+let handler = async (message, {
+  conn: connection,
+  args: arguments,
+  usedPrefix: prefix,
+  command: cmd
+}) => {
   let inputText;
-  if (args.length >= 1) {
-    inputText = args.slice(0).join(" ");
+  if (arguments.length >= 1) {
+    inputText = arguments.slice(0).join(" ");
   } else {
     if (message.quoted && message.quoted.text) {
       inputText = message.quoted.text;
     } else {
-      return message.reply("يمكنك الآن التحدث مع موديل غوغل الجديد bard\n\nمثال \n .bard حوار حول المغرب");
+      return conn.sendMessage(message.chat, {
+        text: "يمكنك الأن التحدث مع موديل غوغل الجديد bard\n\nمثال \n .bard حوار حول المغرب"
+      }, { quoted: message });
     }
   }
-
   let quotedMessage = message.quoted ? message.quoted : message;
   let mimeType = (quotedMessage.msg || quotedMessage).mimetype || '';
-  await message.react('💬');
   
+  // استبدال message.react بإرسال رمز الإيموجي كرسالة
+  await conn.sendMessage(message.chat, { react: { text: '💬', key: message.key }});
+
   if (!mimeType) {
     try {
       let response = await Bard(inputText);
-      await message.reply(response.content);
+      await conn.sendMessage(message.chat, {
+        text: response.content
+      }, { quoted: message });
     } catch (error) {
-      console.error(error);
-      await message.reply("An error occurred");
+      throw "An error occured";
     }
   } else {
     let downloadedImage = await quotedMessage.download();
@@ -33,27 +42,31 @@ let handler = async (message, { conn, args, usedPrefix, command }) => {
     if (isImage) {
       let uploadedImage = await uploadImage(downloadedImage);
       let responseWithImage = await BardImg(inputText, uploadedImage);
-      await message.reply(responseWithImage.content);
+      await conn.sendMessage(message.chat, {
+        text: responseWithImage.content
+      }, { quoted: message });
     } else {
-      await message.reply("Only images are supported");
+      await conn.sendMessage(message.chat, {
+        text: "Only images are supported"
+      }, { quoted: message });
     }
   }
 };
 
 handler.help = ["bard"];
-handler.tags = ['ai'];
+handler.tags = ["ai"];
 handler.command = /^(bard)$/i;
 export default handler;
 
 async function Bard(question) {
   return await bardAi.question({
-    ask: question
+     ask: question
   });
 };
 
 async function BardImg(question, image) {
   return await bardAi.questionWithImage({
-    ask: question,
-    image: image
+     ask: question,
+     image: image
   });
 };
