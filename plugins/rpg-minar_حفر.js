@@ -20,7 +20,7 @@ const handler = async (m, { conn, isPrems }) => {
     const time = user.lastcoins + 600000; // 10 min
 
     if (new Date - user.lastcoins < 600000) {
-        return await conn.reply(m.chat, `${tradutor.texto2[0]} ${msToTime(time - new Date())} ${tradutor.texto2[1]} ${global.rpgshopp.emoticon(money)}⛏️*`, m);
+        return await conn.reply(m.chat, `${tradutor.texto2[0]} ${msToTime(time - new Date())} ${tradutor.texto2[1]} ${global.rpgshop.emoticon(String(money))}⛏️*`, m);
     }
     user.money += premium ? moneypremium : money;
 
@@ -28,10 +28,10 @@ const handler = async (m, { conn, isPrems }) => {
     for (const reward of Object.keys(recompensas)) {
         if (!(reward in user)) continue;
         user[reward] += recompensas[reward];
-        texto += `+${recompensas[reward]} ${global.rpgshop.emoticon(reward)}\n`;
+        texto += `+${recompensas[reward]} ${global.rpgshop.emoticon(String(reward))}\n`;
     }
 
-    const text = `*${premium ? tradutor.texto3[0] : tradutor.texto3[1]}*\n*${minar}*\n*${money} ${global.rpgshop.emoticon(money)}*\n\n${tradutor.texto3[2]}\n${texto}\n\n${tradutor.texto3[3]} ${premium ? '✅' : '❌'}\n${wm}`;
+    const text = `*${premium ? tradutor.texto3[0] : tradutor.texto3[1]}*\n*${minar}*\n*${money} ${global.rpgshop.emoticon(String(money))}*\n\n${tradutor.texto3[2]}\n${texto}\n\n${tradutor.texto3[3]} ${premium ? '✅' : '❌'}\n${wm}`;
     await conn.sendFile(m.chat, pp, 'mystic.jpg', text, m);
     user.lastcoins = new Date * 1;
 };
