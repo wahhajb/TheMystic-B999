@@ -1,3 +1,4 @@
+
 const items = ['limit', 'exp'];
 const confirmation = {};
 
@@ -25,14 +26,14 @@ async function handler(m, { conn, args, usedPrefix, command }) {
   if (!who) return conn.sendMessage(m.chat, {text: tradutor.texto3, mentions: [m.sender]}, {quoted: m});
   if (!(who in global.db.data.users)) return conn.sendMessage(m.chat, {text: `${tradutor.texto4[0]} ${who} ${tradutor.texto4[1]}`, mentions: [m.sender]}, {quoted: m});
   if (user[type] * 1 < count) return conn.sendMessage(m.chat, {text: `${tradutor.texto5[0]} ${type} ${tradutor.texto5[1]}`, mentions: [m.sender]}, {quoted: m});
-const confirm = `${tradutor.texto6[0]} ${count} ${type} إلى @${(who || '').replace(/@s\.whatsapp\.net/g, '')}?* 
+const confirm = `${tradutor.texto6[0]} ${count} ${type} a @${(who || '').replace(/@s\.whatsapp\.net/g, '')}?* 
 ${tradutor.texto6[1]}
 
 ${tradutor.texto6[2]}* 
 ${tradutor.texto6[3]}
 ${tradutor.texto6[4]}`.trim();
   await conn.sendMessage(m.chat, {text: confirm, mentions: [who]}, {quoted: m});
-  confirmation[m.sender] = { sender: m.sender, to: who, message: m, type, count, timeout: setTimeout(() => (conn.sendMessage(m.chat, {text: '*[❗] انتهى الوقت، لم يتم الحصول على رد. تم إلغاء التحويل.*', mentions: [m.sender]}, {quoted: m}), delete confirmation[m.sender]), 60 * 1000)};
+  confirmation[m.sender] = { sender: m.sender, to: who, message: m, type, count, timeout: setTimeout(() => (conn.sendMessage(m.chat, {text: '*[❗] Se acabó el tiempo, no se obtuvo respuesta. Transferencia cancelada.*', mentions: [m.sender]}, {quoted: m}), delete confirmation[m.sender]), 60 * 1000)};
 }
 
 handler.before = async (m) => {
@@ -40,7 +41,7 @@ handler.before = async (m) => {
   const idioma = datas.db.data.users[m.sender].language
   const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
   const tradutor = _translate.plugins.rpg_transfer
-
+  
   if (m.isBaileys) return;
   if (!(m.sender in confirmation)) return;
   if (!m.text) return;
@@ -48,30 +49,30 @@ handler.before = async (m) => {
   if (m.id === message.id) return;
   const user = global.db.data.users[sender];
   const _user = global.db.data.users[to];
-  if (/^لا|لا$/i.test(m.text)) {
+  if (/^No|no$/i.test(m.text)) {
     clearTimeout(timeout);
     delete confirmation[sender];
     return conn.sendMessage(m.chat, {text: tradutor.texto7, mentions: [m.sender]}, {quoted: m});
   }
-  if (/^نعم|نعم$/i.test(m.text)) {
+  if (/^Si|si$/i.test(m.text)) {
     const previous = user[type] * 1;
     const _previous = _user[type] * 1;
     user[type] -= count * 1;
     _user[type] += count * 1;
     if (previous > user[type] * 1 && _previous < _user[type] * 1) {
-      conn.sendMessage(m.chat, {text: `${tradutor.texto8} ${count} ${type} إلى @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m});
+      conn.sendMessage(m.chat, {text: `${tradutor.texto8} ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m});
     } else {
       user[type] = previous;
       _user[type] = _previous;
-      conn.sendMessage(m.chat, {text: `${tradutor.texto9} ${count} ${type} إلى @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m});
+      conn.sendMessage(m.chat, {text: `${tradutor.texto9} ${count} ${type} a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, mentions: [to]}, {quoted: m});
     }
     clearTimeout(timeout);
     delete confirmation[sender];
   }
 };
-handler.help = ['transfer'].map((v) => v + ' [نوع] [كمية] [@تاج]');
+handler.help = ['transfer'].map((v) => v + ' [tipo] [cantidad] [@tag]');
 handler.tags = ['xp'];
-handler.command = ['payxp', 'transfer', 'darxp', 'transferir', 'حوالة'];
+handler.command = ['payxp', 'حوالة', 'darxp', 'transferir'];
 handler.disabled = false;
 export default handler;
 
