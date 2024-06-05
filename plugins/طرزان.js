@@ -5,15 +5,15 @@ const handler = async (m, { conn, command, text }) => {
   const getRandomMessage = (messages) => messages[Math.floor(Math.random() * messages.length)];
   const response =
     `✦•━━━━ ∘⊰🔥⊱∘ ━━━━•✦\n` +
-    `${text} خلاصة: الاسطورة احمد طرزان هو فحل المجال لهااذ العام🦅🇾🇪  ` +
+    `${text} خلاصة: الاسطورة احمد طرزان هو فحل المجال لهذا العام🦅🇾🇪  ` +
     `\n✦•━━━━ ∘⊰🔥⊱∘ ━━━━•✦` +
     ``    
 
   async function loading() {
-var hawemod = [
-"عمك",
-"الاسطورة",
-  "احمد طرزان",
+    var hawemod = [
+      "عمك",
+      "الاسطورة",
+      "احمد طرزان",
       "هو فحل العالم",
       "ونايك",
       "كسم المجال",
@@ -28,14 +28,14 @@ var hawemod = [
       "من كل",
       "جروب🤤🤟🏿"
     ];
-   let { key } = await conn.sendMessage(m.chat, {text: `⌯ نبذة تعريفيه عن فحل المجالم`, mentions: conn.parseMention(response)}, {quoted: m})
- for (let i = 0; i < hawemod.length; i++) {
-   await new Promise(resolve => setTimeout(resolve, 1000)); 
-   await conn.sendMessage(m.chat, {text: hawemod[i], edit: key, mentions: conn.parseMention(response)}, {quoted: m}); 
+    let { key } = await conn.sendMessage(m.chat, {text: `⌯ نبذة تعريفيه عن فحل المجال`, mentions: conn.parseMention(response)}, {quoted: m})
+    for (let i = 0; i < hawemod.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 1000)); 
+      await conn.sendMessage(m.chat, {text: hawemod[i], edit: key, mentions: conn.parseMention(response)}, {quoted: m}); 
+    }
+    await conn.sendMessage(m.chat, {text: response, edit: key, mentions: conn.parseMention(response)}, {quoted: m});         
   }
-  await conn.sendMessage(m.chat, {text: response, edit: key, mentions: conn.parseMention(response)}, {quoted: m});         
- }
-loading()    
+  loading()    
 };
 handler.help = [ love ];
 handler.tags = [ fun ];
