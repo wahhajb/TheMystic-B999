@@ -26,7 +26,7 @@ let handler = async (m, {
 }
 handler.help = ["ji1z"]
 handler.tags = ["ai"];
-handler.command = /^(ji1z)$/i
+handler.command = /^(بوت1)$/i
 
 export default handler
 
