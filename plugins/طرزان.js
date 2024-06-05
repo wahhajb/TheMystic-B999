@@ -5,7 +5,7 @@ const handler = async (m, { conn, command, text }) => {
   const getRandomMessage = (messages) => messages[Math.floor(Math.random() * messages.length)];
   const response =
     `✦•━━━━ ∘⊰🔥⊱∘ ━━━━•✦\n` +
-    `${text}😂♥️ وينك عيوشه لساتك زعلانه ` +
+    `${text}😂♥️ الخلاصة الاسطورة احمد طرزان فحل المجال لهاذا العام ` +
     `\n✦•━━━━ ∘⊰🔥⊱∘ ━━━━•✦` +
     ``    
 
@@ -28,7 +28,7 @@ var hawemod = [
       "⌯ من كل",
       "⌯ جروب🤤🤟🏿"
 ]
-   let { key } = await conn.sendMessage(m.chat, {text: `⌯ زعلانه عيوشه`, mentions: conn.parseMention(response)}, {quoted: m})
+   let { key } = await conn.sendMessage(m.chat, {text: `⌯ تعريف فحل المجال`, mentions: conn.parseMention(response)}, {quoted: m})
  for (let i = 0; i < hawemod.length; i++) {
    await new Promise(resolve => setTimeout(resolve, 1000)); 
    await conn.sendMessage(m.chat, {text: hawemod[i], edit: key, mentions: conn.parseMention(response)}, {quoted: m}); 
@@ -39,5 +39,5 @@ loading()
 };
 handler.help = ['love'];
 handler.tags = ['fun'];
-handler.command = /^(طرزان)$/i;
+handler.command = /^(طرزان|احمدطرزان)$/i;
 export default handler;
