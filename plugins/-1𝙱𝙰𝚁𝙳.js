@@ -14,9 +14,6 @@ let handler = async (message, { text, conn, usedPrefix, command }) => {
     let mediaURL = '';
     let quotedMessage = message.quoted ? message.quoted : message;
 
-    // التفاعل مع الرسالة
-    await message.react('💬');
-
     // التحقق من وجود مرفقات في الرسالة المقتبسة
     if ((quotedMessage.msg || quotedMessage).mimetype || quotedMessage.mediaType || '') {
       let mimeType = (quotedMessage.msg || quotedMessage).mimetype || quotedMessage.mediaType || '';
