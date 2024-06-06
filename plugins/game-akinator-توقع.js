@@ -4,7 +4,7 @@ import translate from '@vitalets/google-translate-api';
 const handler = async (m, {conn, usedPrefix, command, text}) => {
   const datas = global
   const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/ar.json`))
+  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
   const tradutor = _translate.plugins.game_akinator
 
   if (m.isGroup) return;
@@ -29,7 +29,7 @@ const handler = async (m, {conn, usedPrefix, command, text}) => {
       aki.question = question;
       aki.progression = progression;
       aki.step = step;
-      const resultes2 = await translate(question, {to: 'ar', autoCorrect: false});
+      const resultes2 = await translate(question, {to: 'es', autoCorrect: false});
       let txt = `${tradutor.texto5[0]} @${m.sender.split('@')[0]}*\n${tradutor.texto5[1]} ${resultes2.text}*\n\n`;
       txt += tradutor.texto5[2] 
       txt += tradutor.texto5[3] 
@@ -46,5 +46,5 @@ const handler = async (m, {conn, usedPrefix, command, text}) => {
 };
 handler.menu = ['akinator'];
 handler.tags = ['game'];
-handler.command = /^(توقع)$/i;
+handler.command = /^(توقيع)$/i;
 export default handler;
