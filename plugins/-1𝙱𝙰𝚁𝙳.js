@@ -1,41 +1,52 @@
-import _0x3ec5fb from 'node-fetch';
-import _0xdcffbe from '../lib/uploadImage.js';
-let handler = async (_0x4f9075, {
-  text: text,
-  conn: conn,
-  usedPrefix: usedPrefix,
-  command: command
-}) => {
-  if (!text && !(_0x4f9075.quoted && _0x4f9075.quoted.text)) {
-    // Fix Arabic error message
-    throw "*❆━━━═⏣⊰🦇⊱⏣═━━━❆*\n\n*🦇⤺┇ استخدام خاطء ضع رساله للرد عليها.*\n\n*❆━━━═⏣⊰🦇⊱⏣═━━━❆*";
+import fetch from 'node-fetch';
+import uploadImage from '../lib/uploadImage.js';
+
+let handler = async (message, { text, conn, usedPrefix, command }) => {
+  // التحقق من وجود نص أو نص مقتبس
+  if (!text && !(message.quoted && message.quoted.text)) {
+    throw "*❆━━━═⏣⊰🦇⊱⏣═━━━❆*\n\n*🦇⤺┇ استخدام خاطئ، يجب الرد على رسالة.*\n\n*❆━━━═⏣⊰🦇⊱⏣═━━━❆*";
   }
+
   try {
-    const encodedText = encodeURIComponent(text);
+    const inputText = text || message.quoted.text; // الحصول على النص المدخل أو المقتبس
+    const encodedText = encodeURIComponent(inputText);
     let attachment = null;
     let mediaURL = '';
-    let quotedMessage = _0x4f9075.quoted ? _0x4f9075.quoted : _0x4f9075;
+    let quotedMessage = message.quoted ? message.quoted : message;
+
+    // التفاعل مع الرسالة
+    await message.react('💬');
+
+    // التحقق من وجود مرفقات في الرسالة المقتبسة
     if ((quotedMessage.msg || quotedMessage).mimetype || quotedMessage.mediaType || '') {
       let mimeType = (quotedMessage.msg || quotedMessage).mimetype || quotedMessage.mediaType || '';
       if (mimeType.startsWith('video/')) {
-        return _0x4f9075.reply("*❆━━━═⏣⊰🦇⊱⏣═━━━❆*\n\n*🦇⤺┇ يرجى الرد على صورة، لا فيديو!*\n\n*❆━━━═⏣⊰🦇⊱⏣═━━━❆*");
+        return await message.reply("*❆━━━═⏣⊰🦇⊱⏣═━━━❆*\n\n*🦇⤺┇ يرجى الرد على صورة، لا فيديو!*\n\n*❆━━━═⏣⊰🦇⊱⏣═━━━❆*");
       }
       attachment = await quotedMessage.download();
       let isImage = /image\/(png|jpe?g|gif)/.test(mimeType);
-      mediaURL = await (isImage ? _0xdcffbe : _0xdcffbe)(attachment);
+      mediaURL = await uploadImage(attachment);
     }
-    const endpointURL = mediaURL ? "https://api-darkman-3cf8c6ef66b9.herokuapp.com/googlegenai?query=" + encodedText + "&url=" + mediaURL : "https://api-darkman-3cf8c6ef66b9.herokuapp.com/googlegenai?query=" + encodedText + "&url=";
-    conn.sendPresenceUpdate("composing", text.chat);
-    const response = await _0x3ec5fb(endpointURL);
+
+    // إنشاء رابط الطلب النهائي
+    const endpointURL = mediaURL ? `https://api-darkman-3cf8c6ef66b9.herokuapp.com/googlegenai?query=${encodedText}&url=${mediaURL}` : `https://api-darkman-3cf8c6ef66b9.herokuapp.com/googlegenai?query=${encodedText}`;
+
+    // تحديث حالة الكتابة
+    conn.sendPresenceUpdate("composing", message.chat);
+
+    // طلب البيانات من API
+    const response = await fetch(endpointURL);
     const result = await response.json();
     const output = result.result;
-    _0x4f9075.reply(output);
+
+    // الرد بالنتيجة
+    await message.reply(output);
   } catch (error) {
     console.error("Error:", error);
-    // Fix Arabic error message
-    throw "*❆━━━═⏣⊰🦇⊱⏣═━━━❆*\n\n*🦇⤺┇ ايرور يحب*\n\n*❆━━━═⏣⊰🦇⊱⏣═━━━❆*";
+    throw "*❆━━━═⏣⊰🦇⊱⏣═━━━❆*\n\n*🦇⤺┇ حدث خطأ أثناء معالجة طلبك.*\n\n*❆━━━═⏣⊰🦇⊱⏣═━━━❆*";
   }
 };
+
 handler.help = ["googlegenai"];
 handler.tags = ['AI'];
 handler.command = ["bard", "googlegenai", "gemini", 'جيميناي', "دحيح"];
