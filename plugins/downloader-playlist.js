@@ -47,7 +47,7 @@ let handler = async (m, { conn, usedPrefix, text, args, command }) => {
 handler.help = ['playlist'];
 handler.tags = ['dl'];
 handler.command = /^playlist|ytbuscar|yts(earch)?$/i;
-handler.limit = 1;
-handler.level = 3;
+handler.limit = 0;
+handler.level = 0;
 
 export default handler;
