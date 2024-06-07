@@ -4,7 +4,7 @@ import os from 'os';
 
 let limit = 500;
 let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
-  if (!args || !args[0]) throw `✳️ مثال:\n${usedPrefix + command} https://youtube.com/watch?v=GvabaWHngzU`;
+  if (!args || !args[0]) throw `✳️ مثال:\n${usedPrefix + command} https://youtube.com/`;
   if (!args[0].match(/youtu/gi)) throw `❎ تحقق من رابط اليوتيوب`;
 
   let chat = global.db.data.chats[m.chat];
