@@ -15,13 +15,13 @@ let json = await (await fetch(`https://aemt.me/bardimg?url=${media}&text=${text}
 
 conn.sendMessage(m.chat, { text: json.result }, { quoted: m })
 
-} else throw `*قم بالرد على الصورة التي تريد أن أقرأ محتواها*\n\nمثال\n${usedPrefix + command} أعطني معلومات عن الصورة المرسلة`
+} else throw `RESPONDE A UNA IMAGEN CON UN TEXTO\n\nEJEMPLO\n${usedPrefix + command} dame información sobre la imagen enviada`
   
 }
 handler.help = ['bardimg', 'geminiimg']
 handler.tags = ['herramientas']
-handler.command = /^(تحليل|geminiimage|geminimg|geminimage|bardimg)$/i
+handler.command = /^(bardimg|تحليل|geminiimg|geminiimage|geminimg|geminimage)$/i
 
-handler.limit = false
+handler.limit = true
 
 export default handler
