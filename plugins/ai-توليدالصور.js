@@ -1,5 +1,4 @@
 import fetch from 'node-fetch'
-import uploader from '../lib/uploadImage.js'
 
 var handler = async (m, { conn, text, command, usedPrefix }) => {
 
@@ -20,7 +19,7 @@ conn.sendMessage(m.chat, { text: json.result }, { quoted: m })
 }
 handler.help = ['bardimg', 'geminiimg']
 handler.tags = ['herramientas']
-handler.command = /^(bardimg|تحليل|geminiimg|geminiimage|geminimg|geminimage)$/i
+handler.command = /^(bardimg|2تحليل|geminiimg|geminiimage|geminimg|geminimage)$/i
 
 handler.limit = true
 
