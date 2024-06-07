@@ -76,7 +76,7 @@ export default handler;*/
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text }) => {
-  if (!text) throw 'Ø§ÙŠÙ† Ù‡Ùˆ Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø°ÙŠ ØªØ±ÙŠØ¯ Ø§Ù„Ø¨Ø­Ø« Ø¹Ù†Ù‡ ?\nÙ…Ø«Ø§Ù„ : \n .truecaller2 ++96773315673';
+  if (!text) throw 'Ø§ÙŠÙ† Ù‡Ùˆ Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø°ÙŠ ØªØ±ÙŠØ¯ Ø§Ù„Ø¨Ø­Ø« Ø¹Ù†Ù‡ ?\nÙ…Ø«Ø§Ù„ : \n .truecaller2 +967773289295';
 
   try {
     let res = await fetch(`https://inrl-web.onrender.com/api/truecaller?number=${text}`);
