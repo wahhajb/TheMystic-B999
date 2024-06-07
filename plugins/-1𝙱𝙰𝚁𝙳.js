@@ -1,75 +1,20 @@
-import fetch from "node-fetch";
-import uploadImage from "../lib/uploadImage.js";
-import analyzeImage from "./imageAnalysis.js";
-import findExternalInformation from "./externalInformation.js";
-import generateImageDescription from "./imageDescription.js";
-import generateImageInterpretation from "./imageInterpretation.js";
-import generateCreativeText from "./creativeText.js";
+import fetch from 'node-fetch'
+var handler = async (m, { text,  usedPrefix, command }) => {
+if (!text) throw `*${lenguajeGB['smsAvisoMG']()}𝙄𝙉𝙂𝙍𝙀𝙎𝙀 𝙐𝙉𝘼 𝙋𝙀𝙏𝙄𝘾𝙄𝙊𝙉 𝙊 𝙐𝙉𝘼 𝙊𝙍𝘿𝙀𝙉 𝙋𝘼𝙍𝘼 𝙐𝙎𝘼𝙍 𝙇𝘼 𝙁𝙐𝙉𝘾𝙄𝙊𝙉 𝘿𝙀𝙇 𝘽𝘼𝙍𝘿\n\n❏ 𝙀𝙅𝙀𝙈𝙋𝙇𝙊 𝘿𝙀 𝙋𝙀𝙏𝙄𝘾𝙄𝙊𝙉𝙀𝙎 𝙔 𝙊𝙍𝘿𝙀𝙉𝙀𝙎\n❏ ${usedPrefix + command} Recomienda un top 10 de películas de acción\n❏ ${usedPrefix + command} Codigo en JS para un juego de cartas`
+try {
+conn.sendPresenceUpdate('composing', m.chat);
+var apii = await fetch(`https://aemt.me/gemini?text=${text}`)
+var res = await apii.json()
+await m.reply(res.result)
+} catch (e) {
+await conn.reply(m.chat, `${lenguajeGB['smsMalError3']()}#report ${lenguajeGB['smsMensError2']()} ${usedPrefix + command}\n\n${wm}`, fkontak, m)
+console.log(`❗❗ ${lenguajeGB['smsMensError2']()} ${usedPrefix + command} ❗❗`)
+console.log(e)
+}}
+handler.command = ['bard', 'gemini']
+handler.help = ['bard', 'gemini']
+handler.tags = ['herramientas']
 
-let handler = async (message, { text, conn, usedPrefix, command }) => {
-  // التحقق من وجود نص أو نص مقتبس
-  if (!text && !(message.quoted && message.quoted.text)) {
-    throw "*❆━━━═⏣⊰⊱⏣═━━━❆*\n\n*⤺┇ استخدام خاطئ، يجب الرد على رسالة.*\n\n*❆━━━═⏣⊰⊱⏣═━━━❆*";
-  }
+handler.premium = false
 
-  try {
-    const inputText = text || message.quoted.text; // الحصول على النص المدخل أو المقتبس
-    const encodedText = encodeURIComponent(inputText);
-    let attachment = null;
-    let mediaURL = "";
-    let quotedMessage = message.quoted ? message.quoted : message;
-
-    // التحقق من وجود مرفقات في الرسالة المقتبسة
-    if ((quotedMessage.msg || quotedMessage).mimetype || quotedMessage.mediaType || "") {
-      let mimeType = (quotedMessage.msg || quotedMessage).mimetype || quotedMessage.mediaType || "";
-      if (mimeType.startsWith("video/")) {
-        return await message.reply(
-          "*❆━━━═⏣⊰⊱⏣═━━━❆*\n\n*⤺┇ يرجى الرد على صورة، لا فيديو!*\n\n*❆━━━═⏣⊰⊱⏣═━━━❆*"
-        );
-      }
-      attachment = await quotedMessage.download();
-      let isImage = /image\/(png|jpe?g|gif)/.test(mimeType);
-      mediaURL = await uploadImage(attachment);
-    }
-
-    // إنشاء رابط الطلب النهائي
-    const endpointURL = mediaURL
-      ? `https://api-darkman-3cf8c6ef66b9.herokuapp.com/googlegenai?query=${encodedText}&url=${mediaURL}`
-      : `https://api-darkman-3cf8c6ef66b9.herokuapp.com/googlegenai?query=${encodedText}`;
-
-    // تحديث حالة الكتابة
-    conn.sendPresenceUpdate("composing", message.chat);
-
-    // طلب البيانات من API
-    const response = await fetch(endpointURL);
-    const result = await response.json();
-    const output = result.result;
-
-    // تحليل الصورة
-    const imageAnalysis = await analyzeImage(mediaURL);
-
-    // إنشاء وصف للصورة
-    const imageDescription = generateImageDescription(imageAnalysis);
-
-    // البحث عن معلومات خارجية
-    const externalInformation = await findExternalInformation(imageDescription);
-
-    // إنشاء تفسير للصورة
-    const imageInterpretation = generateImageInterpretation(imageAnalysis, externalInformation);
-
-    // إنشاء نص إبداعي مستوحى من الصورة
-    const creativeText = generateCreativeText(imageDescription, imageInterpretation);
-
-    // الرد بالنتيجة
-    await message.reply(
-      `**وصف الصورة:** ${imageDescription}\n\n**التفسير:** ${imageInterpretation}\n\n**معلومات خارجية:** ${externalInformation}\n\n**نص إبداعي:** ${creativeText}`
-    );
-  } catch (error) {
-    console.error("Error:", error);
-    throw "*❆━━━═⏣⊰⊱⏣═━━━❆*\n\n*⤺┇ حدث خطأ أثناء معالجة طلبك.*\n\n*❆━━━═⏣⊰⊱⏣═━━━❆*";
-  }
-};
-
-handler.help = ["googlegenai"];
-handler.tags = ["AI"];
-handler.command = ["bard", "googlegenai
+export default handler
