@@ -47,8 +47,8 @@ console.log(e)
 handler.help = ['playlist']
 handler.tags = ['dl']
 handler.command = /^playlist|يوتيوب|yts(earch)?$/i
-handler.limit = 1
-handler.level = 3
+handler.limit = 0
+handler.level = 0
 
 export default handler
 
